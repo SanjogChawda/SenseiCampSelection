@@ -330,6 +330,7 @@ const MAX_PER_CAMP = 2; // max 2 senseis per camp session
 // ─── STATE & SUPABASE SYNC ───────────────────────────────────────────────────
 let state = {};
 
+// Paste your actual Supabase credentials here (Safe for GitHub Pages)
 const SUPABASE_URL = "https://rxkfdwbpxazttcdyqncf.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4a2Zkd2JweGF6dHRjZHlxbmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODYyMTcsImV4cCI6MjA5Nzk2MjIxN30.-azG0BPoxu8Yjfc5uATvsB6nFpCfpjpsYNlfnUFQ5aw";
 
@@ -356,7 +357,7 @@ function generateDefaultState() {
 // Fetch initial data securely from Supabase
 async function initState() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from("schedule_state")
       .select("state_json")
       .eq("id", 1)
@@ -381,11 +382,9 @@ async function initState() {
 // Save selections to Supabase (authorized by the password header)
 async function saveState() {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseClient 
       .from("schedule_state")
-      .update({ 
-        state_json: state
-      })
+      .update({ state_json: state }) 
       .eq("id", 1);
 
     if (error) throw error;
@@ -396,7 +395,7 @@ async function saveState() {
 
 // Listen for updates from other senseis
 function setupRealtimeSubscription() {
-  supabase
+  supabaseClient
     .channel("public:schedule_state")
     .on(
       "postgres_changes",
