@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeNinjas Richmond Hill — Sensei Camp Picker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-emoji">🥷</div>
+      <div>
+        <h1>CodeNinjas Richmond Hill</h1>
+        <p>Summer Camps 2026 — Sensei Scheduler</p>
+      </div>
+      <div class="header-badges">
+        <span class="badge am">🌅 AM: 9:00–12:00</span>
+        <span class="badge pm">🌇 PM: 1:00–4:00</span>
+        <span class="badge">4 senseis · max 2 per camp</span>
+      </div>
+    </header>
+
+    <div class="legend-bar">
+      <span><span class="dot am"></span> AM Session</span>
+      <span><span class="dot pm"></span> PM Session</span>
+      <span><span class="dot warn"></span> 1/2 spots taken</span>
+      <span
+        ><span class="dot full"></span> Camp full (2/2) — choose another</span
+      >
+    </div>
+
+    <div class="week-tabs-wrap">
+      <div class="week-tabs" id="weekTabs"></div>
+    </div>
+
+    <div class="main" id="mainContent"></div>
+
+    <footer>
+      CodeNinjas Richmond Hill · Sensei Camp Coordinator · Data saved in your
+      browser
+    </footer>
+
+    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </body>
+</html>
