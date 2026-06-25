@@ -1,6 +1,6 @@
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const WEEKS = [
-  { id: "w1",  label: "Jun 29–Jul 3",  dates: "Jun 29 – Jul 3" },
+  { id: "w1",  label: "Jun 29–Jul 3",  dates: "Jun 29 – Jul 3", fourDay: true },
   { id: "w2",  label: "Jul 6–10",      dates: "Jul 6 – Jul 10" },
   { id: "w3",  label: "Jul 13–17",     dates: "Jul 13 – Jul 17" },
   { id: "w4",  label: "Jul 20–24",     dates: "Jul 20 – Jul 24" },
