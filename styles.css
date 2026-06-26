@@ -554,3 +554,123 @@ footer {
   color: var(--text-muted);
   font-weight: 600;
 }
+
+/* ── TOP NAV ── */
+.top-nav {
+  background: white;
+  border-bottom: 2px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-btn {
+  padding: 13px 20px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  background: none;
+  font-family: "Nunito", sans-serif;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-btn:hover { color: var(--blue); }
+.nav-btn.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  background: var(--blue-light);
+}
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── LOCATION SECTIONS ── */
+.location-section {
+  margin-bottom: 28px;
+}
+.location-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.15rem;
+}
+.rh-header {
+  background: linear-gradient(90deg, #e8f4fd 0%, #f0f7ff 100%);
+  border-left: 4px solid var(--blue);
+  color: var(--blue);
+}
+.em-header {
+  background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 100%);
+  border-left: 4px solid #7b2d8b;
+  color: #7b2d8b;
+}
+.location-sub {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0.7;
+  margin-left: auto;
+}
+
+/* 3-column grid for Elgin Mills (3 people) */
+.people-grid-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+@media (max-width: 900px) {
+  .people-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 600px) {
+  .people-grid-3 { grid-template-columns: 1fr !important; }
+}
+
+/* ── LOCATION BADGES in LEGEND ── */
+.loc-badge {
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.rh-badge { background: var(--blue-light); color: var(--blue); }
+.em-badge { background: #f3e8ff; color: #7b2d8b; }
+
+/* ── SCHEDULE IMAGE PAGE ── */
+.schedule-image-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+.schedule-image-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.schedule-image-header h2 {
+  font-family: "Fredoka One", cursive;
+  font-size: 1.7rem;
+  color: var(--blue);
+}
+.schedule-image-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-weight: 600;
+}
+.schedule-image-wrap {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 2px solid var(--border);
+}
+.schedule-image-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+}

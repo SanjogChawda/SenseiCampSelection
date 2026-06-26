@@ -3,44 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeNinjas Richmond Hill — Sensei Camp Picker</title>
+    <title>CodeNinjas — Sensei Camp Picker</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header>
       <div class="header-emoji">🥷</div>
       <div>
-        <h1>CodeNinjas Richmond Hill</h1>
+        <h1>CodeNinjas</h1>
         <p>Summer Camps 2026 — Sensei Scheduler</p>
       </div>
       <div class="header-badges">
         <span class="badge am">🌅 AM: 9:00–12:00</span>
         <span class="badge pm">🌇 PM: 1:00–4:00</span>
-        <span class="badge">4 senseis · max 2 per camp</span>
+        <span class="badge">Max 2 per camp · per location</span>
       </div>
     </header>
 
-    <div class="legend-bar">
-      <span><span class="dot am"></span> AM Session</span>
-      <span><span class="dot pm"></span> PM Session</span>
-      <span><span class="dot warn"></span> 1/2 spots taken</span>
-      <span
-        ><span class="dot full"></span> Camp full (2/2) — choose another</span
-      >
+    <!-- Top nav -->
+    <nav class="top-nav">
+      <button class="nav-btn active" data-page="scheduler" onclick="switchPage('scheduler')">📅 Scheduler</button>
+      <button class="nav-btn" data-page="schedule-rh" onclick="switchPage('schedule-rh')">🗺️ RH Camp Schedule</button>
+      <button class="nav-btn" data-page="schedule-em" onclick="switchPage('schedule-em')">🗺️ EM Camp Schedule</button>
+    </nav>
+
+    <!-- ── PAGE: Scheduler ── -->
+    <div class="page active" data-page="scheduler">
+      <div class="legend-bar">
+        <span><span class="dot am"></span> AM Session</span>
+        <span><span class="dot pm"></span> PM Session</span>
+        <span><span class="dot warn"></span> 1/2 spots taken</span>
+        <span><span class="dot full"></span> Camp full (2/2) — choose another</span>
+        <span class="loc-badge rh-badge">📍 Richmond Hill</span>
+        <span class="loc-badge em-badge">📍 Elgin Mills</span>
+      </div>
+
+      <div class="week-tabs-wrap">
+        <div class="week-tabs" id="weekTabs"></div>
+      </div>
+
+      <div class="main" id="mainContent"></div>
     </div>
 
-    <div class="week-tabs-wrap">
-      <div class="week-tabs" id="weekTabs"></div>
+    <!-- ── PAGE: Richmond Hill Schedule Image ── -->
+    <div class="page" data-page="schedule-rh">
+      <div class="schedule-image-page">
+        <div class="schedule-image-header">
+          <h2>📍 Richmond Hill — Camp Schedule 2026</h2>
+          <p>Full overview of available camps by week for the Richmond Hill location.</p>
+        </div>
+        <div class="schedule-image-wrap">
+          <img src="richmond-hill-schedule.png" alt="Richmond Hill Summer Camp Schedule 2026" />
+        </div>
+      </div>
     </div>
 
-    <div class="main" id="mainContent"></div>
+    <!-- ── PAGE: Elgin Mills Schedule Image ── -->
+    <div class="page" data-page="schedule-em">
+      <div class="schedule-image-page">
+        <div class="schedule-image-header">
+          <h2>📍 Elgin Mills — Camp Schedule 2026</h2>
+          <p>Full overview of available camps by week for the Elgin Mills location.</p>
+        </div>
+        <div class="schedule-image-wrap">
+          <img src="elgin-mills-schedule.png" alt="Elgin Mills Summer Camp Schedule 2026" />
+        </div>
+      </div>
+    </div>
 
     <footer>
-      CodeNinjas Richmond Hill · Sensei Camp Coordinator
+      CodeNinjas Richmond Hill &amp; Elgin Mills · Sensei Camp Coordinator
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
-    
   </body>
 </html>
