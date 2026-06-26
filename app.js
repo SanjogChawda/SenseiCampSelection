@@ -102,7 +102,7 @@ const PEOPLE_EM = [
 ];
 
 const ALL_PEOPLE = [...PEOPLE_RH, ...PEOPLE_EM];
-const MAX_PER_CAMP = 2; // max 2 senseis per camp per session, per location
+const MAX_PER_CAMP = 3; // max 3 senseis per camp per session, per location
 
 // ─── STATE & SUPABASE SYNC ───────────────────────────────────────────────────
 let state = {};
@@ -255,7 +255,7 @@ function buildWeekPanel(week) {
   return `
     <div class="week-heading">
       <h2>📅 ${week.dates} ${fourDayNote}</h2>
-      <p>Assign AM and PM camps for each sensei. Max <strong>2 senseis</strong> per camp session per location.</p>
+      <p>Assign AM and PM camps for each sensei. Max <strong>3 senseis</strong> per camp session per location.</p>
     </div>
     <div class="alerts" id="alerts_${week.id}"></div>
     <div class="actions">
