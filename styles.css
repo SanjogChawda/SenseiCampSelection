@@ -179,11 +179,11 @@ header p {
 /* ── SENSEI GRID ── */
 .people-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-bottom: 32px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .people-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -211,6 +211,7 @@ header p {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 .person-avatar {
   width: 44px;
@@ -228,6 +229,85 @@ header p {
   font-family: "Fredoka One", cursive;
   font-size: 1.25rem;
   letter-spacing: 0.3px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── PERSON HEADER ACTIONS (location switch + remove) ── */
+.person-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 56px; /* align under the name, past the avatar */
+}
+.loc-select {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 6px 12px;
+  background: white;
+  cursor: pointer;
+  flex: 0 0 auto;
+  width: auto;
+}
+.loc-select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.remove-sensei-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #ffeaea;
+  color: var(--red);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.remove-sensei-btn:hover {
+  background: var(--red);
+  color: white;
+}
+
+/* ── ADD SENSEI CARD ── */
+.add-sensei-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: 2.5px dashed var(--border);
+  border-radius: var(--radius);
+  min-height: 140px;
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 0.85rem;
+  font-family: "Nunito", sans-serif;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.add-sensei-card:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-light);
+}
+.add-sensei-plus {
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1;
 }
 .person-body {
   padding: 14px 16px 16px;
@@ -618,17 +698,6 @@ footer {
   font-weight: 700;
   opacity: 0.7;
   margin-left: auto;
-}
-
-/* 3-column grid for Elgin Mills (3 people) */
-.people-grid-3 {
-  grid-template-columns: repeat(3, 1fr) !important;
-}
-@media (max-width: 900px) {
-  .people-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
-}
-@media (max-width: 600px) {
-  .people-grid-3 { grid-template-columns: 1fr !important; }
 }
 
 /* ── LOCATION BADGES in LEGEND ── */

@@ -86,23 +86,57 @@ const SCHEDULE_EM = {
 };
 
 // ── PEOPLE ────────────────────────────────────────────────────────────────────
-// Richmond Hill senseis
-const PEOPLE_RH = [
+// Default sensei roster (used only the very first time the app runs — after
+// that, the live roster lives in `state.people` and is synced via Supabase so
+// adds/removes/location-changes persist and sync across devices).
+const DEFAULT_PEOPLE = [
   { id: "sanjog",  name: "Sanjog",  color: "#e63946", emoji: "🔴", location: "rh" },
   { id: "ava",     name: "Ava",     color: "#f5821f", emoji: "🟠", location: "rh" },
   { id: "hayder",  name: "Hayder",  color: "#1a7abf", emoji: "🔵", location: "rh" },
   { id: "hayley",  name: "Hayley",  color: "#3daa5c", emoji: "🟢", location: "rh" },
-];
-
-// Elgin Mills senseis
-const PEOPLE_EM = [
+  { id: "dean",    name: "Dean",    color: "#ffb703", emoji: "🟡", location: "rh" },
+  { id: "kelly",   name: "Kelly",   color: "#8338ec", emoji: "🟣", location: "rh" },
   { id: "kaden",   name: "Kaden",   color: "#7b2d8b", emoji: "🟣", location: "em" },
   { id: "camden",  name: "Camden",  color: "#c0392b", emoji: "🔴", location: "em" },
   { id: "laura",   name: "Laura",   color: "#16a085", emoji: "🟢", location: "em" },
 ];
 
-const ALL_PEOPLE = [...PEOPLE_RH, ...PEOPLE_EM];
 const MAX_PER_CAMP = 3; // max 3 senseis per camp per session, per location
+
+// Palette used to auto-assign a color/emoji to newly-added senseis.
+const NEW_PERSON_PALETTE = [
+  { color: "#e63946", emoji: "🔴" },
+  { color: "#f5821f", emoji: "🟠" },
+  { color: "#ffd166", emoji: "🟡" },
+  { color: "#3daa5c", emoji: "🟢" },
+  { color: "#1a7abf", emoji: "🔵" },
+  { color: "#7b2d8b", emoji: "🟣" },
+  { color: "#16a085", emoji: "🟤" },
+  { color: "#c0392b", emoji: "⚫" },
+  { color: "#8338ec", emoji: "⚪" },
+  { color: "#ffb703", emoji: "🟠" },
+];
+
+function pickPaletteFor(existingPeople) {
+  const usedColors = new Set(existingPeople.map((p) => p.color));
+  const free = NEW_PERSON_PALETTE.find((c) => !usedColors.has(c.color));
+  return free || NEW_PERSON_PALETTE[existingPeople.length % NEW_PERSON_PALETTE.length];
+}
+
+function slugify(name) {
+  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
+
+function makeUniquePersonId(name, existingPeople) {
+  const base = slugify(name) || "sensei";
+  let id = base;
+  let n = 2;
+  while (existingPeople.some((p) => p.id === id)) {
+    id = `${base}_${n}`;
+    n++;
+  }
+  return id;
+}
 
 // ─── STATE & SUPABASE SYNC ───────────────────────────────────────────────────
 let state = {};
@@ -116,15 +150,21 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 });
 
+// state shape: { people: [ {id,name,color,emoji,location}, ... ], assignments: { personId: { weekId: {am,pm} } } }
+function emptyWeekMap() {
+  const m = {};
+  WEEKS.forEach((w) => { m[w.id] = { am: "", pm: "" }; });
+  return m;
+}
+
 function generateDefaultState() {
-  const defaultState = {};
-  ALL_PEOPLE.forEach((p) => {
-    defaultState[p.id] = {};
-    WEEKS.forEach((w) => {
-      defaultState[p.id][w.id] = { am: "", pm: "" };
-    });
-  });
-  return defaultState;
+  const assignments = {};
+  DEFAULT_PEOPLE.forEach((p) => { assignments[p.id] = emptyWeekMap(); });
+  return { people: DEFAULT_PEOPLE.map((p) => ({ ...p })), assignments };
+}
+
+function ensurePersonAssignments(personId) {
+  if (!state.assignments[personId]) state.assignments[personId] = emptyWeekMap();
 }
 
 async function initState() {
@@ -138,14 +178,16 @@ async function initState() {
     if (error) throw error;
 
     if (data && data.state_json && Object.keys(data.state_json).length > 0) {
-      state = data.state_json;
-      // Ensure new EM people exist in state if loaded from old data
-      PEOPLE_EM.forEach((p) => {
-        if (!state[p.id]) {
-          state[p.id] = {};
-          WEEKS.forEach((w) => { state[p.id][w.id] = { am: "", pm: "" }; });
-        }
-      });
+      const loaded = data.state_json;
+      if (loaded.people && loaded.assignments) {
+        // Current format
+        state = loaded;
+      } else {
+        // Legacy format: the whole object was personId -> weekId -> {am,pm}
+        state = { people: DEFAULT_PEOPLE.map((p) => ({ ...p })), assignments: loaded };
+      }
+      // Ensure every known person has an assignments entry (covers new defaults like Dean/Kelly)
+      state.people.forEach((p) => ensurePersonAssignments(p.id));
     } else {
       state = generateDefaultState();
     }
@@ -175,9 +217,15 @@ function setupRealtimeSubscription() {
     .channel("public:schedule_state")
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "schedule_state" }, (payload) => {
       if (payload.new && payload.new.state_json) {
-        state = payload.new.state_json;
+        const loaded = payload.new.state_json;
+        state = (loaded.people && loaded.assignments)
+          ? loaded
+          : { people: DEFAULT_PEOPLE.map((p) => ({ ...p })), assignments: loaded };
+        const activePage = currentPage;
         const activeTab = document.querySelector(".week-tab.active");
-        if (activeTab) refreshWeek(activeTab.dataset.weekId);
+        renderEntireApp();
+        if (activeTab) switchWeek(activeTab.dataset.weekId);
+        switchPage(activePage);
       }
     })
     .subscribe();
@@ -188,8 +236,12 @@ function getScheduleForLocation(loc) {
   return loc === "em" ? SCHEDULE_EM : SCHEDULE_RH;
 }
 
+function getAllPeople() {
+  return state.people || [];
+}
+
 function getPeopleForLocation(loc) {
-  return loc === "em" ? PEOPLE_EM : PEOPLE_RH;
+  return getAllPeople().filter((p) => p.location === loc);
 }
 
 function getCampsForWeekSession(weekId, session, loc) {
@@ -204,7 +256,7 @@ function getCampsForWeekSession(weekId, session, loc) {
 function getPickCount(weekId, session, campId, loc) {
   const key = session === "AM" ? "am" : "pm";
   const people = getPeopleForLocation(loc);
-  return people.filter((p) => state[p.id]?.[weekId]?.[key] === campId).length;
+  return people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === campId).length;
 }
 
 // ─── NAV / PAGE SWITCHING ─────────────────────────────────────────────────────
@@ -252,6 +304,8 @@ function buildAllPanels() {
 
 function buildWeekPanel(week) {
   const fourDayNote = week.fourDay ? `<span class="week-4day-note">★ 4-Day Week</span>` : "";
+  const peopleRh = getPeopleForLocation("rh");
+  const peopleEm = getPeopleForLocation("em");
   return `
     <div class="week-heading">
       <h2>📅 ${week.dates} ${fourDayNote}</h2>
@@ -266,10 +320,11 @@ function buildWeekPanel(week) {
       <div class="location-header rh-header">
         <span class="location-icon">📍</span>
         <span>Richmond Hill</span>
-        <span class="location-sub">Sanjog · Ava · Hayder · Hayley</span>
+        <span class="location-sub">${peopleRh.map((p) => p.name).join(" · ") || "No senseis yet"}</span>
       </div>
       <div class="people-grid" id="grid_rh_${week.id}">
-        ${PEOPLE_RH.map((p) => buildPersonCard(p, week, "rh")).join("")}
+        ${peopleRh.map((p) => buildPersonCard(p, week, "rh")).join("")}
+        ${buildAddSenseiCard("rh")}
       </div>
     </div>
 
@@ -277,19 +332,20 @@ function buildWeekPanel(week) {
       <div class="location-header em-header">
         <span class="location-icon">📍</span>
         <span>Elgin Mills</span>
-        <span class="location-sub">Kaden · Camden · Laura</span>
+        <span class="location-sub">${peopleEm.map((p) => p.name).join(" · ") || "No senseis yet"}</span>
       </div>
-      <div class="people-grid people-grid-3" id="grid_em_${week.id}">
-        ${PEOPLE_EM.map((p) => buildPersonCard(p, week, "em")).join("")}
+      <div class="people-grid" id="grid_em_${week.id}">
+        ${peopleEm.map((p) => buildPersonCard(p, week, "em")).join("")}
+        ${buildAddSenseiCard("em")}
       </div>
     </div>
 
     <div class="divider"></div>
     <div class="summary-section">
       <h3>📋 Week Summary — Richmond Hill</h3>
-      ${buildSummaryTable(week, PEOPLE_RH)}
+      ${buildSummaryTable(week, peopleRh)}
       <h3 style="margin-top:20px">📋 Week Summary — Elgin Mills</h3>
-      ${buildSummaryTable(week, PEOPLE_EM)}
+      ${buildSummaryTable(week, peopleEm)}
     </div>
     <div class="divider"></div>
     <div class="cap-section">
@@ -305,11 +361,21 @@ function buildWeekPanel(week) {
   `;
 }
 
+function buildAddSenseiCard(loc) {
+  const locLabel = loc === "rh" ? "Richmond Hill" : "Elgin Mills";
+  return `
+    <button class="add-sensei-card" onclick="promptAddSensei('${loc}')" title="Add a sensei to ${locLabel}">
+      <span class="add-sensei-plus">+</span>
+      <span>Add Sensei</span>
+    </button>
+  `;
+}
+
 function buildPersonCard(person, week, loc) {
   const amCamps = getCampsForWeekSession(week.id, "AM", loc);
   const pmCamps = getCampsForWeekSession(week.id, "PM", loc);
-  const curAm = state[person.id]?.[week.id]?.am || "";
-  const curPm = state[person.id]?.[week.id]?.pm || "";
+  const curAm = state.assignments[person.id]?.[week.id]?.am || "";
+  const curPm = state.assignments[person.id]?.[week.id]?.pm || "";
 
   const amOptions = `<option value="">— pick a camp —</option>` +
     amCamps.map((c) => {
@@ -339,6 +405,13 @@ function buildPersonCard(person, week, loc) {
       <div class="person-header" style="background:${person.color}18; border-bottom:2px solid ${person.color}30">
         <div class="person-avatar" style="background:${person.color}">${person.name[0]}</div>
         <h3 style="color:${person.color}">${person.name}</h3>
+        <div class="person-header-actions">
+          <select class="loc-select" title="Move to a different centre" data-person="${person.id}" onchange="onLocationChange(this)">
+            <option value="rh" ${loc === "rh" ? "selected" : ""}>📍 Richmond Hill</option>
+            <option value="em" ${loc === "em" ? "selected" : ""}>📍 Elgin Mills</option>
+          </select>
+          <button class="remove-sensei-btn" title="Remove ${person.name}" onclick="removeSensei('${person.id}')">✕</button>
+        </div>
       </div>
       <div class="person-body">
         <div class="session-block">
@@ -368,8 +441,8 @@ function buildPersonCard(person, week, loc) {
 
 function buildSummaryTable(week, people) {
   const rows = people.map((p) => {
-    const amId = state[p.id]?.[week.id]?.am || "";
-    const pmId = state[p.id]?.[week.id]?.pm || "";
+    const amId = state.assignments[p.id]?.[week.id]?.am || "";
+    const pmId = state.assignments[p.id]?.[week.id]?.pm || "";
     const amCamp = CAMPS.find((c) => c.id === amId);
     const pmCamp = CAMPS.find((c) => c.id === pmId);
     return `
@@ -430,18 +503,18 @@ function updateAlerts(weekId) {
       getCampsForWeekSession(weekId, sess, loc).forEach((c) => {
         const cnt = getPickCount(weekId, sess, c.id, loc);
         if (cnt > MAX_PER_CAMP) {
-          const who = people.filter((p) => state[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
+          const who = people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
           alerts.push(`<div class="alert error">⚠️ <strong>[${locLabel}] ${c.name} (${sess})</strong> is over capacity! ${cnt}/${MAX_PER_CAMP} — ${who}</div>`);
         } else if (cnt === MAX_PER_CAMP) {
-          const who = people.filter((p) => state[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
+          const who = people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
           alerts.push(`<div class="alert warn">🟠 <strong>[${locLabel}] ${c.name} (${sess})</strong> is full (${cnt}/${MAX_PER_CAMP}) — ${who}</div>`);
         }
       });
     });
 
     people.forEach((p) => {
-      const amEmpty = !state[p.id]?.[weekId]?.am;
-      const pmEmpty = !state[p.id]?.[weekId]?.pm;
+      const amEmpty = !state.assignments[p.id]?.[weekId]?.am;
+      const pmEmpty = !state.assignments[p.id]?.[weekId]?.pm;
       const amAvail = getCampsForWeekSession(weekId, "AM", loc).length > 0;
       const pmAvail = getCampsForWeekSession(weekId, "PM", loc).length > 0;
       const missing = [amEmpty && amAvail ? "AM" : "", pmEmpty && pmAvail ? "PM" : ""].filter(Boolean).join(" & ");
@@ -457,11 +530,70 @@ function updateAlerts(weekId) {
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 function onSelectChange(e) {
   const { person, week, session } = e.target.dataset;
-  if (!state[person]) state[person] = {};
-  if (!state[person][week]) state[person][week] = { am: "", pm: "" };
-  state[person][week][session] = e.target.value;
+  ensurePersonAssignments(person);
+  if (!state.assignments[person][week]) state.assignments[person][week] = { am: "", pm: "" };
+  state.assignments[person][week][session] = e.target.value;
   saveState();
   refreshWeek(week);
+}
+
+// ─── ROSTER MANAGEMENT (add / remove / move senseis) ────────────────────────
+function promptAddSensei(loc) {
+  const locLabel = loc === "rh" ? "Richmond Hill" : "Elgin Mills";
+  const name = prompt(`Sensei's name to add to ${locLabel}:`);
+  if (!name || !name.trim()) return;
+  addSensei(name.trim(), loc);
+}
+
+function addSensei(name, loc) {
+  const people = getAllPeople();
+  const id = makeUniquePersonId(name, people);
+  const palette = pickPaletteFor(people);
+  const newPerson = { id, name, color: palette.color, emoji: palette.emoji, location: loc };
+  state.people.push(newPerson);
+  state.assignments[id] = emptyWeekMap();
+  saveState();
+  rerenderKeepingView();
+}
+
+function removeSensei(personId) {
+  const person = getAllPeople().find((p) => p.id === personId);
+  if (!person) return;
+  if (!confirm(`Remove ${person.name} from the roster? This will also clear all of their camp assignments.`)) return;
+  state.people = state.people.filter((p) => p.id !== personId);
+  delete state.assignments[personId];
+  saveState();
+  rerenderKeepingView();
+}
+
+function onLocationChange(selectEl) {
+  const personId = selectEl.dataset.person;
+  const newLoc = selectEl.value;
+  const person = getAllPeople().find((p) => p.id === personId);
+  if (!person || person.location === newLoc) return;
+  const newLocLabel = newLoc === "rh" ? "Richmond Hill" : "Elgin Mills";
+  const ok = confirm(
+    `Move ${person.name} to ${newLocLabel}? Their existing camp picks will be cleared, since camp offerings differ by centre.`
+  );
+  if (!ok) {
+    selectEl.value = person.location; // revert
+    return;
+  }
+  person.location = newLoc;
+  state.assignments[personId] = emptyWeekMap();
+  saveState();
+  rerenderKeepingView();
+}
+
+// Rebuild the whole app (roster changes affect grids on every week panel)
+// while preserving which week tab and which page the user was looking at.
+function rerenderKeepingView() {
+  const activeTab = document.querySelector(".week-tab.active");
+  const activeWeekId = activeTab ? activeTab.dataset.weekId : null;
+  const activePage = currentPage;
+  renderEntireApp();
+  if (activeWeekId) switchWeek(activeWeekId);
+  switchPage(activePage);
 }
 
 function styleSelect(sel) {
@@ -484,8 +616,8 @@ function refreshWeek(weekId) {
 
 function resetWeek(weekId) {
   if (!confirm("Clear all picks for this week?")) return;
-  ALL_PEOPLE.forEach((p) => {
-    if (state[p.id]) state[p.id][weekId] = { am: "", pm: "" };
+  getAllPeople().forEach((p) => {
+    if (state.assignments[p.id]) state.assignments[p.id][weekId] = { am: "", pm: "" };
   });
   saveState();
   refreshWeek(weekId);
