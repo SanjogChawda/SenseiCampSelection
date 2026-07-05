@@ -1,11 +1,11 @@
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const WEEKS = [
-  { id: "w1",  label: "Jun 29–Jul 3 ★4d",  dates: "Jun 29 – Jul 3", fourDay: true },
+  { id: "w1",  label: "Jun 29–Jul 3 · 4d",  dates: "Jun 29 – Jul 3", fourDay: true },
   { id: "w2",  label: "Jul 6–10",      dates: "Jul 6 – Jul 10" },
   { id: "w3",  label: "Jul 13–17",     dates: "Jul 13 – Jul 17" },
   { id: "w4",  label: "Jul 20–24",     dates: "Jul 20 – Jul 24" },
   { id: "w5",  label: "Jul 27–31",     dates: "Jul 27 – Jul 31" },
-  { id: "w6",  label: "Aug 4–7 ★4d",   dates: "Aug 4 – Aug 7", fourDay: true },
+  { id: "w6",  label: "Aug 4–7 · 4d",   dates: "Aug 4 – Aug 7", fourDay: true },
   { id: "w7",  label: "Aug 10–14",     dates: "Aug 10 – Aug 14" },
   { id: "w8",  label: "Aug 17–21",     dates: "Aug 17 – Aug 21" },
   { id: "w9",  label: "Aug 24–28",     dates: "Aug 24 – Aug 28" },
@@ -16,25 +16,25 @@ const WEEKS = [
 // Shared camp list (names/ids are the same at both locations)
 const CAMPS = [
   // Ages 5–7
-  { id: "jr_mc_roblox",   name: "Jr Minecraft & Roblox",          age: "5–7",  badge: "⭐ Best Seller" },
-  { id: "jr_lego_robot",  name: "Jr Lego Robotics & Coding",      age: "5–7",  badge: "⭐ Best Seller" },
+  { id: "jr_mc_roblox",   name: "Jr Minecraft & Roblox",          age: "5–7",  badge: "Best Seller" },
+  { id: "jr_lego_robot",  name: "Jr Lego Robotics & Coding",      age: "5–7",  badge: "Best Seller" },
   { id: "jr_eng",         name: "Jr Engineering",                  age: "5–7" },
-  { id: "jr_coding_elec", name: "Jr Coding & Electronics",        age: "5–7",  badge: "⭐ Best Seller 🆕" },
+  { id: "jr_coding_elec", name: "Jr Coding & Electronics",        age: "5–7",  badge: "Best Seller · New" },
   // Ages 7–14
   { id: "lego_robotics",  name: "Lego Robotics Engineering",      age: "7–14" },
   { id: "modeling_3d",    name: "3D Modeling Basics",             age: "7–14" },
-  { id: "yt_ai_studio",   name: "YouTube AI Production Studio",   age: "7–14", badge: "🆕 New" },
-  { id: "yt_content",     name: "YouTube Content Studio",         age: "7–14", badge: "⭐ Best Seller" },
-  { id: "roblox_world",   name: "Roblox World Building",          age: "7–14", badge: "⭐ Best Seller" },
-  { id: "mc_modding",     name: "Minecraft Modding",              age: "7–14", badge: "⭐ Best Seller" },
+  { id: "yt_ai_studio",   name: "YouTube AI Production Studio",   age: "7–14", badge: "New" },
+  { id: "yt_content",     name: "YouTube Content Studio",         age: "7–14", badge: "Best Seller" },
+  { id: "roblox_world",   name: "Roblox World Building",          age: "7–14", badge: "Best Seller" },
+  { id: "mc_modding",     name: "Minecraft Modding",              age: "7–14", badge: "Best Seller" },
   { id: "mc_redstone",    name: "Minecraft Redstone Engineering", age: "7–14" },
-  { id: "cyber_coding",   name: "Cybersecurity Coding",          age: "9–14", badge: "🆕 ⭐ Best Seller" },
-  { id: "ai_ml",          name: "AI Coding & Machine Learning",  age: "9–14", badge: "🆕 ⭐ Best Seller" },
+  { id: "cyber_coding",   name: "Cybersecurity Coding",          age: "9–14", badge: "New · Best Seller" },
+  { id: "ai_ml",          name: "AI Coding & Machine Learning",  age: "9–14", badge: "New · Best Seller" },
   // Ages 9–14
-  { id: "cyber_break",    name: "Cybersecurity & Codebreaking",  age: "9–14", badge: "🆕 New" },
+  { id: "cyber_break",    name: "Cybersecurity & Codebreaking",  age: "9–14", badge: "New" },
   { id: "roblox_adv",     name: "Roblox Advanced Coding",        age: "9–14" },
   { id: "mobile_app",     name: "Mobile App Design & Coding",    age: "9–14" },
-  { id: "html_css",       name: "HTML & CSS Web Development",    age: "9–14", badge: "⭐ Best Seller" },
+  { id: "html_css",       name: "HTML & CSS Web Development",    age: "9–14", badge: "Best Seller" },
 ];
 
 // ── RICHMOND HILL SCHEDULE ────────────────────────────────────────────────────
@@ -69,8 +69,8 @@ const SCHEDULE_EM = {
   jr_mc_roblox:   { w1:["AM"], w2:[],     w3:["AM"], w4:["AM"], w5:[],     w6:[],     w7:["AM"], w8:[],     w9:[],     w10:["AM"] },
   jr_lego_robot:  { w1:[],     w2:["PM"], w3:[],     w4:["PM"], w5:[],     w6:[],     w7:[],     w8:["PM"], w9:[],     w10:["PM"] },
   jr_eng:         { w1:["PM"], w2:[],     w3:["PM"], w4:[],     w5:["AM"], w6:[],     w7:[],     w8:["AM"], w9:["AM"], w10:[]     },
-  jr_coding_elec: { w1:[],     w2:["AM"], w3:[],     w4:[],     w5:["PM"], w6:[],     w7:["PM"], w8:[],     w9:["PM"], w10:[]     },
-  lego_robotics:  { w1:[],     w2:[],     w3:["PM"], w4:[],     w5:[],     w6:[],     w7:["PM"], w8:[""],   w9:[],     w10:[]     },
+  jr_coding_elec: { w1:[],     w2:["AM"], w3:[],     w4:[],     w5:["PM"], w6:[],     w7:["PM"], w8:["PM"], w9:["PM"], w10:[]     },
+  lego_robotics:  { w1:[],     w2:["PM"], w3:["PM"], w4:[],     w5:[],     w6:[],     w7:["PM"], w8:["PM"], w9:[],     w10:[]     },
   modeling_3d:    { w1:[],     w2:["AM"], w3:[],     w4:[],     w5:["AM"], w6:[],     w7:[],     w8:[],     w9:["AM"], w10:[]     },
   yt_ai_studio:   { w1:[],     w2:["PM"], w3:[],     w4:["PM"], w5:[],     w6:["PM"], w7:[],     w8:[],     w9:["PM"], w10:[]     },
   yt_content:     { w1:["PM"], w2:[],     w3:[],     w4:[],     w5:[],     w6:[],     w7:["AM"], w8:[],     w9:[],     w10:[]     },
@@ -303,22 +303,21 @@ function buildAllPanels() {
 }
 
 function buildWeekPanel(week) {
-  const fourDayNote = week.fourDay ? `<span class="week-4day-note">★ 4-Day Week</span>` : "";
+  const fourDayNote = week.fourDay ? `<span class="week-4day-note">4-Day Week</span>` : "";
   const peopleRh = getPeopleForLocation("rh");
   const peopleEm = getPeopleForLocation("em");
   return `
     <div class="week-heading">
-      <h2>📅 ${week.dates} ${fourDayNote}</h2>
+      <h2>${week.dates} ${fourDayNote}</h2>
       <p>Assign AM and PM camps for each sensei. Max <strong>3 senseis</strong> per camp session per location.</p>
     </div>
     <div class="alerts" id="alerts_${week.id}"></div>
     <div class="actions">
-      <button class="btn btn-danger" onclick="resetWeek('${week.id}')">🗑️ Clear This Week</button>
+      <button class="btn btn-danger" onclick="resetWeek('${week.id}')">Clear this week</button>
     </div>
 
     <div class="location-section">
       <div class="location-header rh-header">
-        <span class="location-icon">📍</span>
         <span>Richmond Hill</span>
         <span class="location-sub">${peopleRh.map((p) => p.name).join(" · ") || "No senseis yet"}</span>
       </div>
@@ -330,7 +329,6 @@ function buildWeekPanel(week) {
 
     <div class="location-section">
       <div class="location-header em-header">
-        <span class="location-icon">📍</span>
         <span>Elgin Mills</span>
         <span class="location-sub">${peopleEm.map((p) => p.name).join(" · ") || "No senseis yet"}</span>
       </div>
@@ -342,19 +340,19 @@ function buildWeekPanel(week) {
 
     <div class="divider"></div>
     <div class="summary-section">
-      <h3>📋 Week Summary — Richmond Hill</h3>
+      <h3>Week Summary — Richmond Hill</h3>
       ${buildSummaryTable(week, peopleRh)}
-      <h3 style="margin-top:20px">📋 Week Summary — Elgin Mills</h3>
+      <h3 style="margin-top:20px">Week Summary — Elgin Mills</h3>
       ${buildSummaryTable(week, peopleEm)}
     </div>
     <div class="divider"></div>
     <div class="cap-section">
-      <h3 style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px;">
-        📊 Camp Capacity — Richmond Hill
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:8px;">
+        Camp Capacity — Richmond Hill
       </h3>
       <div class="cap-grid" id="capgrid_rh_${week.id}">${buildCapGrid(week, "rh")}</div>
-      <h3 style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--text);margin:18px 0 8px;display:flex;align-items:center;gap:8px;">
-        📊 Camp Capacity — Elgin Mills
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--text);margin:18px 0 8px;">
+        Camp Capacity — Elgin Mills
       </h3>
       <div class="cap-grid" id="capgrid_em_${week.id}">${buildCapGrid(week, "em")}</div>
     </div>
@@ -366,7 +364,7 @@ function buildAddSenseiCard(loc) {
   return `
     <button class="add-sensei-card" onclick="promptAddSensei('${loc}')" title="Add a sensei to ${locLabel}">
       <span class="add-sensei-plus">+</span>
-      <span>Add Sensei</span>
+      <span>Add sensei</span>
     </button>
   `;
 }
@@ -401,14 +399,14 @@ function buildPersonCard(person, week, loc) {
   const noPm = pmCamps.length === 0;
 
   return `
-    <div class="person-card" id="card_${person.id}_${week.id}">
-      <div class="person-header" style="background:${person.color}18; border-bottom:2px solid ${person.color}30">
-        <div class="person-avatar" style="background:${person.color}">${person.name[0]}</div>
-        <h3 style="color:${person.color}">${person.name}</h3>
+    <div class="person-card" id="card_${person.id}_${week.id}" style="--card-accent:${person.color}">
+      <div class="person-header">
+        <div class="person-avatar" style="background:${person.color}1c; color:${person.color}; border:1px solid ${person.color}40">${person.name[0]}</div>
+        <h3>${person.name}</h3>
         <div class="person-header-actions">
           <select class="loc-select" title="Move to a different centre" data-person="${person.id}" onchange="onLocationChange(this)">
-            <option value="rh" ${loc === "rh" ? "selected" : ""}>📍 Richmond Hill</option>
-            <option value="em" ${loc === "em" ? "selected" : ""}>📍 Elgin Mills</option>
+            <option value="rh" ${loc === "rh" ? "selected" : ""}>Richmond Hill</option>
+            <option value="em" ${loc === "em" ? "selected" : ""}>Elgin Mills</option>
           </select>
           <button class="remove-sensei-btn" title="Remove ${person.name}" onclick="removeSensei('${person.id}')">✕</button>
         </div>
@@ -416,8 +414,7 @@ function buildPersonCard(person, week, loc) {
       <div class="person-body">
         <div class="session-block">
           <div class="session-label">
-            <span class="tag am">AM</span>
-            <span style="color:var(--green)">Morning Session</span>
+            <span class="tag am">// AM</span>
             <span class="tag time">9:00–12:00</span>
           </div>
           ${noAm
@@ -426,8 +423,7 @@ function buildPersonCard(person, week, loc) {
         </div>
         <div class="session-block">
           <div class="session-label">
-            <span class="tag pm">PM</span>
-            <span style="color:var(--blue)">Afternoon Session</span>
+            <span class="tag pm">// PM</span>
             <span class="tag time">1:00–4:00</span>
           </div>
           ${noPm
@@ -447,9 +443,9 @@ function buildSummaryTable(week, people) {
     const pmCamp = CAMPS.find((c) => c.id === pmId);
     return `
       <tr>
-        <td><strong style="color:${p.color}">${p.emoji} ${p.name}</strong></td>
-        <td>${amCamp ? `<span class="chip am">🌅 ${amCamp.name}</span>` : `<span class="chip none">Not selected</span>`}</td>
-        <td>${pmCamp ? `<span class="chip pm">🌇 ${pmCamp.name}</span>` : `<span class="chip none">Not selected</span>`}</td>
+        <td><strong style="color:${p.color}">${p.name}</strong></td>
+        <td>${amCamp ? `<span class="chip am">${amCamp.name}</span>` : `<span class="chip none">Not selected</span>`}</td>
+        <td>${pmCamp ? `<span class="chip pm">${pmCamp.name}</span>` : `<span class="chip none">Not selected</span>`}</td>
       </tr>`;
   }).join("");
   return `
@@ -504,10 +500,10 @@ function updateAlerts(weekId) {
         const cnt = getPickCount(weekId, sess, c.id, loc);
         if (cnt > MAX_PER_CAMP) {
           const who = people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
-          alerts.push(`<div class="alert error">⚠️ <strong>[${locLabel}] ${c.name} (${sess})</strong> is over capacity! ${cnt}/${MAX_PER_CAMP} — ${who}</div>`);
+          alerts.push(`<div class="alert error"><strong>[${locLabel}] ${c.name} (${sess})</strong> is over capacity — ${cnt}/${MAX_PER_CAMP} — ${who}</div>`);
         } else if (cnt === MAX_PER_CAMP) {
           const who = people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
-          alerts.push(`<div class="alert warn">🟠 <strong>[${locLabel}] ${c.name} (${sess})</strong> is full (${cnt}/${MAX_PER_CAMP}) — ${who}</div>`);
+          alerts.push(`<div class="alert warn"><strong>[${locLabel}] ${c.name} (${sess})</strong> is full (${cnt}/${MAX_PER_CAMP}) — ${who}</div>`);
         }
       });
     });
@@ -519,7 +515,7 @@ function updateAlerts(weekId) {
       const pmAvail = getCampsForWeekSession(weekId, "PM", loc).length > 0;
       const missing = [amEmpty && amAvail ? "AM" : "", pmEmpty && pmAvail ? "PM" : ""].filter(Boolean).join(" & ");
       if (missing) {
-        alerts.push(`<div class="alert info">💡 <strong>${p.name}</strong> (${locLabel}) hasn't been assigned a ${missing} camp yet</div>`);
+        alerts.push(`<div class="alert info"><strong>${p.name}</strong> (${locLabel}) hasn't been assigned a ${missing} camp yet</div>`);
       }
     });
   });
