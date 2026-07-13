@@ -1,40 +1,168 @@
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const WEEKS = [
-  { id: "w1",  label: "Jun 29–Jul 3 · 4d",  dates: "Jun 29 – Jul 3", fourDay: true },
-  { id: "w2",  label: "Jul 6–10",      dates: "Jul 6 – Jul 10" },
-  { id: "w3",  label: "Jul 13–17",     dates: "Jul 13 – Jul 17" },
-  { id: "w4",  label: "Jul 20–24",     dates: "Jul 20 – Jul 24" },
-  { id: "w5",  label: "Jul 27–31",     dates: "Jul 27 – Jul 31" },
-  { id: "w6",  label: "Aug 4–7 · 4d",   dates: "Aug 4 – Aug 7", fourDay: true },
-  { id: "w7",  label: "Aug 10–14",     dates: "Aug 10 – Aug 14" },
-  { id: "w8",  label: "Aug 17–21",     dates: "Aug 17 – Aug 21" },
-  { id: "w9",  label: "Aug 24–28",     dates: "Aug 24 – Aug 28" },
-  { id: "w10", label: "Aug 31–Sep 4",  dates: "Aug 31 – Sep 4" },
+  {
+    id: "w1",
+    label: "Jun 29–Jul 3 · 4d",
+    dates: "Jun 29 – Jul 3",
+    fourDay: true,
+    start: "2026-06-29",
+    end: "2026-07-03",
+  },
+  {
+    id: "w2",
+    label: "Jul 6–10",
+    dates: "Jul 6 – Jul 10",
+    start: "2026-07-06",
+    end: "2026-07-10",
+  },
+  {
+    id: "w3",
+    label: "Jul 13–17",
+    dates: "Jul 13 – Jul 17",
+    start: "2026-07-13",
+    end: "2026-07-17",
+  },
+  {
+    id: "w4",
+    label: "Jul 20–24",
+    dates: "Jul 20 – Jul 24",
+    start: "2026-07-20",
+    end: "2026-07-24",
+  },
+  {
+    id: "w5",
+    label: "Jul 27–31",
+    dates: "Jul 27 – Jul 31",
+    start: "2026-07-27",
+    end: "2026-07-31",
+  },
+  {
+    id: "w6",
+    label: "Aug 4–7 · 4d",
+    dates: "Aug 4 – Aug 7",
+    fourDay: true,
+    start: "2026-08-04",
+    end: "2026-08-07",
+  },
+  {
+    id: "w7",
+    label: "Aug 10–14",
+    dates: "Aug 10 – Aug 14",
+    start: "2026-08-10",
+    end: "2026-08-14",
+  },
+  {
+    id: "w8",
+    label: "Aug 17–21",
+    dates: "Aug 17 – Aug 21",
+    start: "2026-08-17",
+    end: "2026-08-21",
+  },
+  {
+    id: "w9",
+    label: "Aug 24–28",
+    dates: "Aug 24 – Aug 28",
+    start: "2026-08-24",
+    end: "2026-08-28",
+  },
+  {
+    id: "w10",
+    label: "Aug 31–Sep 4",
+    dates: "Aug 31 – Sep 4",
+    start: "2026-08-31",
+    end: "2026-09-04",
+  },
 ];
+
+// defaults to today's week — falls forward on weekend gaps, clamps to
+// the last week once the season's done
+function getCurrentWeekId() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  for (const w of WEEKS) {
+    if (now <= new Date(`${w.end}T23:59:59`)) return w.id;
+  }
+  return WEEKS[WEEKS.length - 1].id;
+}
 
 // ── CAMPS ─────────────────────────────────────────────────────────────────────
 // Shared camp list (names/ids are the same at both locations)
 const CAMPS = [
   // Ages 5–7
-  { id: "jr_mc_roblox",   name: "Jr Minecraft & Roblox",          age: "5–7",  badge: "Best Seller" },
-  { id: "jr_lego_robot",  name: "Jr Lego Robotics & Coding",      age: "5–7",  badge: "Best Seller" },
-  { id: "jr_eng",         name: "Jr Engineering",                  age: "5–7" },
-  { id: "jr_coding_elec", name: "Jr Coding & Electronics",        age: "5–7",  badge: "Best Seller · New" },
+  {
+    id: "jr_mc_roblox",
+    name: "Jr Minecraft & Roblox",
+    age: "5–7",
+    badge: "Best Seller",
+  },
+  {
+    id: "jr_lego_robot",
+    name: "Jr Lego Robotics & Coding",
+    age: "5–7",
+    badge: "Best Seller",
+  },
+  { id: "jr_eng", name: "Jr Engineering", age: "5–7" },
+  {
+    id: "jr_coding_elec",
+    name: "Jr Coding & Electronics",
+    age: "5–7",
+    badge: "Best Seller · New",
+  },
   // Ages 7–14
-  { id: "lego_robotics",  name: "Lego Robotics Engineering",      age: "7–14" },
-  { id: "modeling_3d",    name: "3D Modeling Basics",             age: "7–14" },
-  { id: "yt_ai_studio",   name: "YouTube AI Production Studio",   age: "7–14", badge: "New" },
-  { id: "yt_content",     name: "YouTube Content Studio",         age: "7–14", badge: "Best Seller" },
-  { id: "roblox_world",   name: "Roblox World Building",          age: "7–14", badge: "Best Seller" },
-  { id: "mc_modding",     name: "Minecraft Modding",              age: "7–14", badge: "Best Seller" },
-  { id: "mc_redstone",    name: "Minecraft Redstone Engineering", age: "7–14" },
-  { id: "cyber_coding",   name: "Cybersecurity Coding",          age: "9–14", badge: "New · Best Seller" },
-  { id: "ai_ml",          name: "AI Coding & Machine Learning",  age: "9–14", badge: "New · Best Seller" },
+  { id: "lego_robotics", name: "Lego Robotics Engineering", age: "7–14" },
+  { id: "modeling_3d", name: "3D Modeling Basics", age: "7–14" },
+  {
+    id: "yt_ai_studio",
+    name: "YouTube AI Production Studio",
+    age: "7–14",
+    badge: "New",
+  },
+  {
+    id: "yt_content",
+    name: "YouTube Content Studio",
+    age: "7–14",
+    badge: "Best Seller",
+  },
+  {
+    id: "roblox_world",
+    name: "Roblox World Building",
+    age: "7–14",
+    badge: "Best Seller",
+  },
+  {
+    id: "mc_modding",
+    name: "Minecraft Modding",
+    age: "7–14",
+    badge: "Best Seller",
+  },
+  { id: "mc_redstone", name: "Minecraft Redstone Engineering", age: "7–14" },
+  {
+    id: "cyber_coding",
+    name: "Cybersecurity Coding",
+    age: "9–14",
+    badge: "New · Best Seller",
+  },
+  {
+    id: "ai_ml",
+    name: "AI Coding & Machine Learning",
+    age: "9–14",
+    badge: "New · Best Seller",
+  },
   // Ages 9–14
-  { id: "cyber_break",    name: "Cybersecurity & Codebreaking",  age: "9–14", badge: "New" },
-  { id: "roblox_adv",     name: "Roblox Advanced Coding",        age: "9–14" },
-  { id: "mobile_app",     name: "Mobile App Design & Coding",    age: "9–14" },
-  { id: "html_css",       name: "HTML & CSS Web Development",    age: "9–14", badge: "Best Seller" },
+  {
+    id: "cyber_break",
+    name: "Cybersecurity & Codebreaking",
+    age: "9–14",
+    badge: "New",
+  },
+  { id: "roblox_adv", name: "Roblox Advanced Coding", age: "9–14" },
+  { id: "mobile_app", name: "Mobile App Design & Coding", age: "9–14" },
+  {
+    id: "html_css",
+    name: "HTML & CSS Web Development",
+    age: "9–14",
+    badge: "Best Seller",
+  },
 ];
 
 // ── RICHMOND HILL SCHEDULE ────────────────────────────────────────────────────
@@ -42,23 +170,210 @@ const CAMPS = [
 // Source: provided schedule table.
 const SCHEDULE_RH = {
   //                          w1      w2      w3      w4      w5      w6      w7      w8      w9      w10
-  jr_mc_roblox:   { w1:["AM"], w2:[],     w3:[],     w4:["AM"], w5:[],     w6:["AM"], w7:[],     w8:["AM"], w9:[],     w10:["AM"] },
-  jr_lego_robot:  { w1:[],     w2:["PM"], w3:["PM"], w4:[],     w5:[],     w6:["PM"], w7:[],     w8:[],     w9:["PM"], w10:["PM"] },
-  jr_eng:         { w1:[],     w2:["AM"], w3:[],     w4:["PM"], w5:["AM"], w6:[],     w7:["AM"], w8:[],     w9:["AM"], w10:[]     },
-  jr_coding_elec: { w1:["PM"], w2:[],     w3:["AM"], w4:[],     w5:["PM"], w6:["PM"], w7:["PM"], w8:["PM"], w9:[],     w10:[]     },
-  lego_robotics:  { w1:[],     w2:["PM"], w3:[],     w4:["PM"], w5:[],     w6:[],     w7:[],     w8:["PM"], w9:[],     w10:[]     },
-  modeling_3d:    { w1:["PM"], w2:[],     w3:[],     w4:[],     w5:["AM"], w6:[],     w7:[],     w8:[],     w9:["AM"], w10:[]     },
-  yt_ai_studio:   { w1:[],     w2:["AM"], w3:[],     w4:[],     w5:["PM"], w6:[],     w7:["AM"], w8:[],     w9:[],     w10:[]     },
-  yt_content:     { w1:["PM"], w2:[],     w3:[],     w4:["PM"], w5:[],     w6:["PM"], w7:[],     w8:[],     w9:["PM"], w10:[]     },
-  roblox_world:   { w1:["AM"], w2:[],     w3:["AM"], w4:[],     w5:[],     w6:[],     w7:[],     w8:["AM"], w9:[],     w10:["AM"] },
-  mc_modding:     { w1:["AM"], w2:[],     w3:[],     w4:["AM"], w5:[],     w6:["AM"], w7:[],     w8:["AM"], w9:[],     w10:[]     },
-  mc_redstone:    { w1:[],     w2:[],     w3:["PM"], w4:[],     w5:[],     w6:[],     w7:[],     w8:["PM"], w9:[],     w10:["PM"] },
-  cyber_coding:   { w1:[],     w2:[],     w3:[],     w4:[],     w5:["AM"], w6:[],     w7:["PM"], w8:[],     w9:[],     w10:[]     },
-  ai_ml:          { w1:[],     w2:["PM"], w3:[],     w4:[],     w5:["PM"], w6:[],     w7:[],     w8:[],     w9:["AM"], w10:[]     },
-  cyber_break:    { w1:[],     w2:[],     w3:[],     w4:[],     w5:[],     w6:["AM"], w7:[],     w8:[],     w9:["PM"], w10:[]     },
-  roblox_adv:     { w1:[],     w2:[],     w3:[],     w4:[],     w5:[],     w6:["PM"], w7:[],     w8:[],     w9:[],     w10:["PM"] },
-  mobile_app:     { w1:[],     w2:[],     w3:["AM"], w4:[],     w5:[],     w6:[],     w7:["PM"], w8:[],     w9:[],     w10:[]     },
-  html_css:       { w1:[],     w2:["AM"], w3:["PM"], w4:[],     w5:[],     w6:[],     w7:["AM"], w8:[],     w9:[],     w10:["AM"] },
+  jr_mc_roblox: {
+    w1: ["AM"],
+    w2: [],
+    w3: [],
+    w4: ["AM"],
+    w5: [],
+    w6: ["AM"],
+    w7: [],
+    w8: ["AM"],
+    w9: [],
+    w10: ["AM"],
+  },
+  jr_lego_robot: {
+    w1: [],
+    w2: ["PM"],
+    w3: ["PM"],
+    w4: [],
+    w5: [],
+    w6: ["PM"],
+    w7: [],
+    w8: [],
+    w9: ["PM"],
+    w10: ["PM"],
+  },
+  jr_eng: {
+    w1: [],
+    w2: ["AM"],
+    w3: [],
+    w4: ["PM"],
+    w5: ["AM"],
+    w6: [],
+    w7: ["AM"],
+    w8: [],
+    w9: ["AM"],
+    w10: [],
+  },
+  jr_coding_elec: {
+    w1: ["PM"],
+    w2: [],
+    w3: ["AM"],
+    w4: [],
+    w5: ["PM"],
+    w6: ["PM"],
+    w7: ["PM"],
+    w8: ["PM"],
+    w9: [],
+    w10: [],
+  },
+  lego_robotics: {
+    w1: [],
+    w2: ["PM"],
+    w3: [],
+    w4: ["PM"],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: ["PM"],
+    w9: [],
+    w10: [],
+  },
+  modeling_3d: {
+    w1: ["PM"],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: ["AM"],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: ["AM"],
+    w10: [],
+  },
+  yt_ai_studio: {
+    w1: [],
+    w2: ["AM"],
+    w3: [],
+    w4: [],
+    w5: ["PM"],
+    w6: [],
+    w7: ["AM"],
+    w8: [],
+    w9: [],
+    w10: [],
+  },
+  yt_content: {
+    w1: ["PM"],
+    w2: [],
+    w3: [],
+    w4: ["PM"],
+    w5: [],
+    w6: ["PM"],
+    w7: [],
+    w8: [],
+    w9: ["PM"],
+    w10: [],
+  },
+  roblox_world: {
+    w1: ["AM"],
+    w2: [],
+    w3: ["AM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: ["AM"],
+    w9: [],
+    w10: ["AM"],
+  },
+  mc_modding: {
+    w1: ["AM"],
+    w2: [],
+    w3: [],
+    w4: ["AM"],
+    w5: [],
+    w6: ["AM"],
+    w7: [],
+    w8: ["AM"],
+    w9: [],
+    w10: [],
+  },
+  mc_redstone: {
+    w1: [],
+    w2: [],
+    w3: ["PM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: ["PM"],
+    w9: [],
+    w10: ["PM"],
+  },
+  cyber_coding: {
+    w1: [],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: ["AM"],
+    w6: [],
+    w7: ["PM"],
+    w8: [],
+    w9: [],
+    w10: [],
+  },
+  ai_ml: {
+    w1: [],
+    w2: ["PM"],
+    w3: [],
+    w4: [],
+    w5: ["PM"],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: ["AM"],
+    w10: [],
+  },
+  cyber_break: {
+    w1: [],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: [],
+    w6: ["AM"],
+    w7: [],
+    w8: [],
+    w9: ["PM"],
+    w10: [],
+  },
+  roblox_adv: {
+    w1: [],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: [],
+    w6: ["PM"],
+    w7: [],
+    w8: [],
+    w9: [],
+    w10: ["PM"],
+  },
+  mobile_app: {
+    w1: [],
+    w2: [],
+    w3: ["AM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: ["PM"],
+    w8: [],
+    w9: [],
+    w10: [],
+  },
+  html_css: {
+    w1: [],
+    w2: ["AM"],
+    w3: ["PM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: ["AM"],
+    w8: [],
+    w9: [],
+    w10: ["AM"],
+  },
 };
 
 // ── ELGIN MILLS SCHEDULE ──────────────────────────────────────────────────────
@@ -66,23 +381,210 @@ const SCHEDULE_RH = {
 // Source: provided schedule table.
 const SCHEDULE_EM = {
   //                          w1      w2      w3      w4      w5      w6      w7      w8      w9      w10
-  jr_mc_roblox:   { w1:["AM"], w2:[],     w3:["AM"], w4:["AM"], w5:[],     w6:[],     w7:["AM"], w8:[],     w9:[],     w10:["AM"] },
-  jr_lego_robot:  { w1:[],     w2:["PM"], w3:[],     w4:["PM"], w5:[],     w6:[],     w7:[],     w8:["PM"], w9:[],     w10:["PM"] },
-  jr_eng:         { w1:["PM"], w2:[],     w3:["PM"], w4:[],     w5:["AM"], w6:[],     w7:[],     w8:["AM"], w9:["AM"], w10:[]     },
-  jr_coding_elec: { w1:[],     w2:["AM"], w3:[],     w4:[],     w5:["PM"], w6:[],     w7:["PM"], w8:["PM"], w9:["PM"], w10:[]     },
-  lego_robotics:  { w1:[],     w2:["PM"], w3:["PM"], w4:[],     w5:[],     w6:[],     w7:["PM"], w8:["PM"], w9:[],     w10:[]     },
-  modeling_3d:    { w1:[],     w2:["AM"], w3:[],     w4:[],     w5:["AM"], w6:[],     w7:[],     w8:[],     w9:["AM"], w10:[]     },
-  yt_ai_studio:   { w1:[],     w2:["PM"], w3:[],     w4:["PM"], w5:[],     w6:["PM"], w7:[],     w8:[],     w9:["PM"], w10:[]     },
-  yt_content:     { w1:["PM"], w2:[],     w3:[],     w4:[],     w5:[],     w6:[],     w7:["AM"], w8:[],     w9:[],     w10:[]     },
-  roblox_world:   { w1:[],     w2:["AM"], w3:[],     w4:["AM"], w5:[],     w6:["AM"], w7:[],     w8:["AM"], w9:[],     w10:["AM"] },
-  mc_modding:     { w1:["AM"], w2:[],     w3:[],     w4:[],     w5:["PM"], w6:[],     w7:[],     w8:[],     w9:["AM"], w10:[]     },
-  mc_redstone:    { w1:[],     w2:[],     w3:[],     w4:["PM"], w5:[],     w6:["AM"], w7:[],     w8:["PM"], w9:[],     w10:[]     },
-  cyber_coding:   { w1:[],     w2:[],     w3:["AM"], w4:[],     w5:[],     w6:[],     w7:[],     w8:[],     w9:[],     w10:[]     },
-  ai_ml:          { w1:[],     w2:["PM"], w3:[],     w4:["AM"], w5:[],     w6:["PM"], w7:[],     w8:[],     w9:["PM"], w10:[]     },
-  cyber_break:    { w1:[],     w2:[],     w3:[],     w4:[],     w5:["AM"], w6:[],     w7:[],     w8:[],     w9:[],     w10:[]     },
-  roblox_adv:     { w1:[],     w2:[],     w3:[],     w4:[],     w5:["PM"], w6:[],     w7:[],     w8:[],     w9:[],     w10:["PM"] },
-  mobile_app:     { w1:[],     w2:[],     w3:["AM"], w4:[],     w5:[],     w6:[],     w7:[],     w8:["PM"], w9:[],     w10:[]     },
-  html_css:       { w1:[],     w2:[],     w3:["PM"], w4:[],     w5:[],     w6:[],     w7:[],     w8:["AM"], w9:[],     w10:[]     },
+  jr_mc_roblox: {
+    w1: ["AM"],
+    w2: [],
+    w3: ["AM"],
+    w4: ["AM"],
+    w5: [],
+    w6: [],
+    w7: ["AM"],
+    w8: [],
+    w9: [],
+    w10: ["AM"],
+  },
+  jr_lego_robot: {
+    w1: [],
+    w2: ["PM"],
+    w3: [],
+    w4: ["PM"],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: ["PM"],
+    w9: [],
+    w10: ["PM"],
+  },
+  jr_eng: {
+    w1: ["PM"],
+    w2: [],
+    w3: ["PM"],
+    w4: [],
+    w5: ["AM"],
+    w6: [],
+    w7: [],
+    w8: ["AM"],
+    w9: ["AM"],
+    w10: [],
+  },
+  jr_coding_elec: {
+    w1: [],
+    w2: ["AM"],
+    w3: [],
+    w4: [],
+    w5: ["PM"],
+    w6: [],
+    w7: ["PM"],
+    w8: ["PM"],
+    w9: ["PM"],
+    w10: [],
+  },
+  lego_robotics: {
+    w1: [],
+    w2: ["PM"],
+    w3: ["PM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: ["PM"],
+    w8: ["PM"],
+    w9: [],
+    w10: [],
+  },
+  modeling_3d: {
+    w1: [],
+    w2: ["AM"],
+    w3: [],
+    w4: [],
+    w5: ["AM"],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: ["AM"],
+    w10: [],
+  },
+  yt_ai_studio: {
+    w1: [],
+    w2: ["PM"],
+    w3: [],
+    w4: ["PM"],
+    w5: [],
+    w6: ["PM"],
+    w7: [],
+    w8: [],
+    w9: ["PM"],
+    w10: [],
+  },
+  yt_content: {
+    w1: ["PM"],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: ["AM"],
+    w8: [],
+    w9: [],
+    w10: [],
+  },
+  roblox_world: {
+    w1: [],
+    w2: ["AM"],
+    w3: [],
+    w4: ["AM"],
+    w5: [],
+    w6: ["AM"],
+    w7: [],
+    w8: ["AM"],
+    w9: [],
+    w10: ["AM"],
+  },
+  mc_modding: {
+    w1: ["AM"],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: ["PM"],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: ["AM"],
+    w10: [],
+  },
+  mc_redstone: {
+    w1: [],
+    w2: [],
+    w3: [],
+    w4: ["PM"],
+    w5: [],
+    w6: ["AM"],
+    w7: [],
+    w8: ["PM"],
+    w9: [],
+    w10: [],
+  },
+  cyber_coding: {
+    w1: [],
+    w2: [],
+    w3: ["AM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: [],
+    w10: [],
+  },
+  ai_ml: {
+    w1: [],
+    w2: ["PM"],
+    w3: [],
+    w4: ["AM"],
+    w5: [],
+    w6: ["PM"],
+    w7: [],
+    w8: [],
+    w9: ["PM"],
+    w10: [],
+  },
+  cyber_break: {
+    w1: [],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: ["AM"],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: [],
+    w10: [],
+  },
+  roblox_adv: {
+    w1: [],
+    w2: [],
+    w3: [],
+    w4: [],
+    w5: ["PM"],
+    w6: [],
+    w7: [],
+    w8: [],
+    w9: [],
+    w10: ["PM"],
+  },
+  mobile_app: {
+    w1: [],
+    w2: [],
+    w3: ["AM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: ["PM"],
+    w9: [],
+    w10: [],
+  },
+  html_css: {
+    w1: [],
+    w2: [],
+    w3: ["PM"],
+    w4: [],
+    w5: [],
+    w6: [],
+    w7: [],
+    w8: ["AM"],
+    w9: [],
+    w10: [],
+  },
 };
 
 // ── PEOPLE ────────────────────────────────────────────────────────────────────
@@ -90,15 +592,39 @@ const SCHEDULE_EM = {
 // that, the live roster lives in `state.people` and is synced via Supabase so
 // adds/removes/location-changes persist and sync across devices).
 const DEFAULT_PEOPLE = [
-  { id: "sanjog",  name: "Sanjog",  color: "#e63946", emoji: "🔴", location: "rh" },
-  { id: "ava",     name: "Ava",     color: "#f5821f", emoji: "🟠", location: "rh" },
-  { id: "hayder",  name: "Hayder",  color: "#1a7abf", emoji: "🔵", location: "rh" },
-  { id: "hayley",  name: "Hayley",  color: "#3daa5c", emoji: "🟢", location: "rh" },
-  { id: "dean",    name: "Dean",    color: "#ffb703", emoji: "🟡", location: "rh" },
-  { id: "kelly",   name: "Kelly",   color: "#8338ec", emoji: "🟣", location: "rh" },
-  { id: "kaden",   name: "Kaden",   color: "#7b2d8b", emoji: "🟣", location: "em" },
-  { id: "camden",  name: "Camden",  color: "#c0392b", emoji: "🔴", location: "em" },
-  { id: "laura",   name: "Laura",   color: "#16a085", emoji: "🟢", location: "em" },
+  {
+    id: "sanjog",
+    name: "Sanjog",
+    color: "#e63946",
+    emoji: "🔴",
+    location: "rh",
+  },
+  { id: "ava", name: "Ava", color: "#f5821f", emoji: "🟠", location: "rh" },
+  {
+    id: "hayder",
+    name: "Hayder",
+    color: "#1a7abf",
+    emoji: "🔵",
+    location: "rh",
+  },
+  {
+    id: "hayley",
+    name: "Hayley",
+    color: "#3daa5c",
+    emoji: "🟢",
+    location: "rh",
+  },
+  { id: "dean", name: "Dean", color: "#ffb703", emoji: "🟡", location: "rh" },
+  { id: "kelly", name: "Kelly", color: "#8338ec", emoji: "🟣", location: "rh" },
+  { id: "kaden", name: "Kaden", color: "#7b2d8b", emoji: "🟣", location: "em" },
+  {
+    id: "camden",
+    name: "Camden",
+    color: "#c0392b",
+    emoji: "🔴",
+    location: "em",
+  },
+  { id: "laura", name: "Laura", color: "#16a085", emoji: "🟢", location: "em" },
 ];
 
 const MAX_PER_CAMP = 3; // max 3 senseis per camp per session, per location
@@ -120,11 +646,18 @@ const NEW_PERSON_PALETTE = [
 function pickPaletteFor(existingPeople) {
   const usedColors = new Set(existingPeople.map((p) => p.color));
   const free = NEW_PERSON_PALETTE.find((c) => !usedColors.has(c.color));
-  return free || NEW_PERSON_PALETTE[existingPeople.length % NEW_PERSON_PALETTE.length];
+  return (
+    free ||
+    NEW_PERSON_PALETTE[existingPeople.length % NEW_PERSON_PALETTE.length]
+  );
 }
 
 function slugify(name) {
-  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
 }
 
 function makeUniquePersonId(name, existingPeople) {
@@ -141,30 +674,271 @@ function makeUniquePersonId(name, existingPeople) {
 // ─── STATE & SUPABASE SYNC ───────────────────────────────────────────────────
 let state = {};
 
+// anon key is public by design, not a secret — access control is via
+// RLS + auth now, not by hiding this
 const SUPABASE_URL = "https://rxkfdwbpxazttcdyqncf.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4a2Zkd2JweGF6dHRjZHlxbmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODYyMTcsImV4cCI6MjA5Nzk2MjIxN30.-azG0BPoxu8Yjfc5uATvsB6nFpCfpjpsYNlfnUFQ5aw";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4a2Zkd2JweGF6dHRjZHlxbmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODYyMTcsImV4cCI6MjA5Nzk2MjIxN30.-azG0BPoxu8Yjfc5uATvsB6nFpCfpjpsYNlfnUFQ5aw";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  global: {
-    headers: { "X-Schedule-Password": "CodeNinjasRH2026!" },
-  },
-});
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─── AUTH & ROLES ─────────────────────────────────────────────────────────────
+// currentUser = { id, email, role: 'admin' | 'sensei' | 'guest' }
+let currentUser = null;
+let changeRequests = [];
+
+function isAdmin() {
+  return !!currentUser && currentUser.role === "admin";
+}
+function canEdit() {
+  return !!currentUser && currentUser.role !== "guest";
+}
+
+function showLogin(errorMsg) {
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("appRoot").style.display = "none";
+  document.getElementById("loginError").textContent = errorMsg || "";
+}
+function hideLogin() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("appRoot").style.display = "block";
+}
+
+async function handleSession(session) {
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("role, display_name")
+    .eq("id", session.user.id)
+    .single();
+
+  if (error || !profile) {
+    showLogin(
+      "This account has no role assigned. Ask the admin to set one up.",
+    );
+    await supabaseClient.auth.signOut();
+    return;
+  }
+
+  currentUser = {
+    id: session.user.id,
+    email: session.user.email,
+    role: profile.role,
+    displayName: profile.display_name,
+  };
+  hideLogin();
+
+  const roleBadge = document.getElementById("roleBadge");
+  if (roleBadge) roleBadge.textContent = currentUser.role;
+
+  const notifBell = document.getElementById("notifBell");
+  if (notifBell) notifBell.style.display = isAdmin() ? "flex" : "none";
+
+  await initState();
+
+  if (isAdmin()) {
+    loadChangeRequests();
+    subscribeToChangeRequests();
+  }
+}
+
+async function initAuth() {
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+  if (session) {
+    await handleSession(session);
+  } else {
+    showLogin();
+  }
+
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" && session && !currentUser) {
+      handleSession(session);
+    } else if (event === "SIGNED_OUT") {
+      currentUser = null;
+      showLogin();
+    }
+  });
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const btn = document.getElementById("loginSubmitBtn");
+    btn.disabled = true;
+    btn.textContent = "Signing in…";
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+    btn.disabled = false;
+    btn.textContent = "Sign In";
+    if (error) {
+      document.getElementById("loginError").textContent =
+        "Incorrect email or password.";
+      return;
+    }
+    await handleSession(data.session);
+  });
+}
+
+// guest is read-only so hardcoding creds here is fine, same access either way
+const GUEST_CREDENTIALS = {
+  email: "guestview@codeninjas.com",
+  password: "1234567890", // <-- set this to the guest account's actual password
+};
+
+async function signInAsGuest() {
+  const btn = document.getElementById("guestSignInBtn");
+  btn.disabled = true;
+  btn.textContent = "Signing in…";
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword(GUEST_CREDENTIALS);
+  btn.disabled = false;
+  btn.textContent = "Sign in as guest";
+  if (error) {
+    document.getElementById("loginError").textContent =
+      "Guest sign-in isn't set up correctly — contact the admin.";
+    console.error("Guest sign-in error:", error);
+    return;
+  }
+  await handleSession(data.session);
+}
+
+async function doLogout() {
+  await supabaseClient.auth.signOut();
+}
+
+// ─── CHANGE REQUESTS (notifications for admin) ───────────────────────────────
+async function loadChangeRequests() {
+  if (!isAdmin()) return;
+  const { data, error } = await supabaseClient
+    .from("change_requests")
+    .select("*")
+    .eq("dismissed", false)
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("Error loading change requests:", error);
+    return;
+  }
+  changeRequests = data || [];
+  renderNotifBell();
+  renderNotifList();
+}
+
+function subscribeToChangeRequests() {
+  supabaseClient
+    .channel("public:change_requests")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "change_requests" },
+      () => loadChangeRequests(),
+    )
+    .subscribe();
+}
+
+function renderNotifBell() {
+  const bell = document.getElementById("notifBell");
+  if (!bell) return;
+  const count = changeRequests.length;
+  bell.querySelector(".notif-count").textContent = count;
+  bell.classList.toggle("has-notifs", count > 0);
+}
+
+function toggleNotifPanel() {
+  document.getElementById("notifPanel").classList.toggle("open");
+}
+
+function renderNotifList() {
+  const panel = document.getElementById("notifPanel");
+  if (!panel) return;
+  if (changeRequests.length === 0) {
+    panel.innerHTML = `<div class="notif-empty">No pending requests</div>`;
+    return;
+  }
+  panel.innerHTML = changeRequests
+    .map((r) => {
+      const week = WEEKS.find((w) => w.id === r.week_id);
+      const locLabel = r.location === "rh" ? "Richmond Hill" : "Elgin Mills";
+      return `
+      <div class="notif-item">
+        <div class="notif-main"><strong>${r.requested_by}</strong> wants <strong>${r.camp_name}</strong> (${r.session}, ${week ? week.label : r.week_id}) — ${locLabel}</div>
+        ${r.note ? `<div class="notif-note">"${r.note}"</div>` : ""}
+        <div class="notif-meta">${new Date(r.created_at).toLocaleString()}</div>
+        <button class="btn btn-outline notif-dismiss" onclick="dismissRequest('${r.id}')">Dismiss</button>
+      </div>`;
+    })
+    .join("");
+}
+
+async function dismissRequest(id) {
+  const { error } = await supabaseClient
+    .from("change_requests")
+    .update({ dismissed: true })
+    .eq("id", id);
+  if (error) console.error("Error dismissing request:", error);
+  loadChangeRequests();
+}
+
+async function promptChangeRequest(weekId, session, loc, personName) {
+  const camps = getCampsForWeekSession(weekId, session, loc).filter(
+    (c) => getPickCount(weekId, session, c.id, loc) >= MAX_PER_CAMP,
+  );
+  if (camps.length === 0) return;
+
+  const listText = camps.map((c, i) => `${i + 1}. ${c.name}`).join("\n");
+  const choice = prompt(
+    `${personName} — which full camp would you like to request for ${session}?\n\n${listText}\n\nEnter a number:`,
+  );
+  if (choice === null) return;
+  const idx = parseInt(choice, 10) - 1;
+  if (isNaN(idx) || idx < 0 || idx >= camps.length) return;
+  const camp = camps[idx];
+  const note = prompt("Add a note for the admin (optional):") || "";
+  const week = WEEKS.find((w) => w.id === weekId);
+
+  const { error } = await supabaseClient.from("change_requests").insert({
+    requested_by: personName,
+    location: loc,
+    week_id: weekId,
+    session,
+    camp_id: camp.id,
+    camp_name: camp.name,
+    note,
+  });
+
+  if (error) {
+    alert(
+      "Couldn't submit the request — please try again or tell the admin directly.",
+    );
+    console.error("Error submitting change request:", error);
+  } else {
+    alert(
+      `Request sent — ${personName} wants ${camp.name} (${session}, ${week ? week.label : weekId}). The admin will be notified.`,
+    );
+  }
+}
 
 // state shape: { people: [ {id,name,color,emoji,location}, ... ], assignments: { personId: { weekId: {am,pm} } } }
 function emptyWeekMap() {
   const m = {};
-  WEEKS.forEach((w) => { m[w.id] = { am: "", pm: "" }; });
+  WEEKS.forEach((w) => {
+    m[w.id] = { am: "", pm: "" };
+  });
   return m;
 }
 
 function generateDefaultState() {
   const assignments = {};
-  DEFAULT_PEOPLE.forEach((p) => { assignments[p.id] = emptyWeekMap(); });
+  DEFAULT_PEOPLE.forEach((p) => {
+    assignments[p.id] = emptyWeekMap();
+  });
   return { people: DEFAULT_PEOPLE.map((p) => ({ ...p })), assignments };
 }
 
 function ensurePersonAssignments(personId) {
-  if (!state.assignments[personId]) state.assignments[personId] = emptyWeekMap();
+  if (!state.assignments[personId])
+    state.assignments[personId] = emptyWeekMap();
 }
 
 async function initState() {
@@ -184,7 +958,10 @@ async function initState() {
         state = loaded;
       } else {
         // Legacy format: the whole object was personId -> weekId -> {am,pm}
-        state = { people: DEFAULT_PEOPLE.map((p) => ({ ...p })), assignments: loaded };
+        state = {
+          people: DEFAULT_PEOPLE.map((p) => ({ ...p })),
+          assignments: loaded,
+        };
       }
       // Ensure every known person has an assignments entry (covers new defaults like Dean/Kelly)
       state.people.forEach((p) => ensurePersonAssignments(p.id));
@@ -197,6 +974,7 @@ async function initState() {
   }
 
   renderEntireApp();
+  switchWeek(getCurrentWeekId());
   setupRealtimeSubscription();
 }
 
@@ -215,19 +993,27 @@ async function saveState() {
 function setupRealtimeSubscription() {
   supabaseClient
     .channel("public:schedule_state")
-    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "schedule_state" }, (payload) => {
-      if (payload.new && payload.new.state_json) {
-        const loaded = payload.new.state_json;
-        state = (loaded.people && loaded.assignments)
-          ? loaded
-          : { people: DEFAULT_PEOPLE.map((p) => ({ ...p })), assignments: loaded };
-        const activePage = currentPage;
-        const activeTab = document.querySelector(".week-tab.active");
-        renderEntireApp();
-        if (activeTab) switchWeek(activeTab.dataset.weekId);
-        switchPage(activePage);
-      }
-    })
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "schedule_state" },
+      (payload) => {
+        if (payload.new && payload.new.state_json) {
+          const loaded = payload.new.state_json;
+          state =
+            loaded.people && loaded.assignments
+              ? loaded
+              : {
+                  people: DEFAULT_PEOPLE.map((p) => ({ ...p })),
+                  assignments: loaded,
+                };
+          const activePage = currentPage;
+          const activeTab = document.querySelector(".week-tab.active");
+          renderEntireApp();
+          if (activeTab) switchWeek(activeTab.dataset.weekId);
+          switchPage(activePage);
+        }
+      },
+    )
     .subscribe();
 }
 
@@ -252,11 +1038,23 @@ function getCampsForWeekSession(weekId, session, loc) {
   });
 }
 
+function getSenseiNumber(person, loc) {
+  const peopleAtLoc = getPeopleForLocation(loc);
+  return peopleAtLoc.findIndex((p) => p.id === person.id) + 1;
+}
+
+// guests get "Sensei #N" instead of the real name — everyone else sees the real name
+function displayName(person, loc) {
+  return canEdit() ? person.name : `Sensei #${getSenseiNumber(person, loc)}`;
+}
+
 // Count picks within a given location group only
 function getPickCount(weekId, session, campId, loc) {
   const key = session === "AM" ? "am" : "pm";
   const people = getPeopleForLocation(loc);
-  return people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === campId).length;
+  return people.filter(
+    (p) => state.assignments[p.id]?.[weekId]?.[key] === campId,
+  ).length;
 }
 
 // ─── NAV / PAGE SWITCHING ─────────────────────────────────────────────────────
@@ -303,7 +1101,9 @@ function buildAllPanels() {
 }
 
 function buildWeekPanel(week) {
-  const fourDayNote = week.fourDay ? `<span class="week-4day-note">4-Day Week</span>` : "";
+  const fourDayNote = week.fourDay
+    ? `<span class="week-4day-note">4-Day Week</span>`
+    : "";
   const peopleRh = getPeopleForLocation("rh");
   const peopleEm = getPeopleForLocation("em");
   return `
@@ -313,37 +1113,37 @@ function buildWeekPanel(week) {
     </div>
     <div class="alerts" id="alerts_${week.id}"></div>
     <div class="actions">
-      <button class="btn btn-danger" onclick="resetWeek('${week.id}')">Clear this week</button>
+      ${isAdmin() ? `<button class="btn btn-danger" onclick="resetWeek('${week.id}')">Clear this week</button>` : ""}
     </div>
 
     <div class="location-section">
       <div class="location-header rh-header">
         <span>Richmond Hill</span>
-        <span class="location-sub">${peopleRh.map((p) => p.name).join(" · ") || "No senseis yet"}</span>
+        <span class="location-sub">${peopleRh.map((p) => displayName(p, "rh")).join(" · ") || "No senseis yet"}</span>
       </div>
       <div class="people-grid" id="grid_rh_${week.id}">
         ${peopleRh.map((p) => buildPersonCard(p, week, "rh")).join("")}
-        ${buildAddSenseiCard("rh")}
+        ${isAdmin() ? buildAddSenseiCard("rh") : ""}
       </div>
     </div>
 
     <div class="location-section">
       <div class="location-header em-header">
         <span>Elgin Mills</span>
-        <span class="location-sub">${peopleEm.map((p) => p.name).join(" · ") || "No senseis yet"}</span>
+        <span class="location-sub">${peopleEm.map((p) => displayName(p, "em")).join(" · ") || "No senseis yet"}</span>
       </div>
       <div class="people-grid" id="grid_em_${week.id}">
         ${peopleEm.map((p) => buildPersonCard(p, week, "em")).join("")}
-        ${buildAddSenseiCard("em")}
+        ${isAdmin() ? buildAddSenseiCard("em") : ""}
       </div>
     </div>
 
     <div class="divider"></div>
     <div class="summary-section">
       <h3>Week Summary — Richmond Hill</h3>
-      ${buildSummaryTable(week, peopleRh)}
+      ${buildSummaryTable(week, peopleRh, "rh")}
       <h3 style="margin-top:20px">Week Summary — Elgin Mills</h3>
-      ${buildSummaryTable(week, peopleEm)}
+      ${buildSummaryTable(week, peopleEm, "em")}
     </div>
     <div class="divider"></div>
     <div class="cap-section">
@@ -375,25 +1175,33 @@ function buildPersonCard(person, week, loc) {
   const curAm = state.assignments[person.id]?.[week.id]?.am || "";
   const curPm = state.assignments[person.id]?.[week.id]?.pm || "";
 
-  const amOptions = `<option value="">— pick a camp —</option>` +
-    amCamps.map((c) => {
-      const cnt = getPickCount(week.id, "AM", c.id, loc);
-      const full = cnt >= MAX_PER_CAMP && curAm !== c.id;
-      const warn = cnt === MAX_PER_CAMP - 1 && curAm !== c.id;
-      const label = `${c.name} (${c.age}yr)${c.badge ? " " + c.badge : ""}` +
-        (full ? " — FULL" : warn ? " — 1 spot left" : "");
-      return `<option value="${c.id}" ${curAm === c.id ? "selected" : ""} ${full ? "disabled" : ""}>${label}</option>`;
-    }).join("");
+  const amOptions =
+    `<option value="">— pick a camp —</option>` +
+    amCamps
+      .map((c) => {
+        const cnt = getPickCount(week.id, "AM", c.id, loc);
+        const full = cnt >= MAX_PER_CAMP && curAm !== c.id;
+        const warn = cnt === MAX_PER_CAMP - 1 && curAm !== c.id;
+        const label =
+          `${c.name} (${c.age}yr)${c.badge ? " " + c.badge : ""}` +
+          (full ? " — FULL" : warn ? " — 1 spot left" : "");
+        return `<option value="${c.id}" ${curAm === c.id ? "selected" : ""} ${full ? "disabled" : ""}>${label}</option>`;
+      })
+      .join("");
 
-  const pmOptions = `<option value="">— pick a camp —</option>` +
-    pmCamps.map((c) => {
-      const cnt = getPickCount(week.id, "PM", c.id, loc);
-      const full = cnt >= MAX_PER_CAMP && curPm !== c.id;
-      const warn = cnt === MAX_PER_CAMP - 1 && curPm !== c.id;
-      const label = `${c.name} (${c.age}yr)${c.badge ? " " + c.badge : ""}` +
-        (full ? " — FULL" : warn ? " — 1 spot left" : "");
-      return `<option value="${c.id}" ${curPm === c.id ? "selected" : ""} ${full ? "disabled" : ""}>${label}</option>`;
-    }).join("");
+  const pmOptions =
+    `<option value="">— pick a camp —</option>` +
+    pmCamps
+      .map((c) => {
+        const cnt = getPickCount(week.id, "PM", c.id, loc);
+        const full = cnt >= MAX_PER_CAMP && curPm !== c.id;
+        const warn = cnt === MAX_PER_CAMP - 1 && curPm !== c.id;
+        const label =
+          `${c.name} (${c.age}yr)${c.badge ? " " + c.badge : ""}` +
+          (full ? " — FULL" : warn ? " — 1 spot left" : "");
+        return `<option value="${c.id}" ${curPm === c.id ? "selected" : ""} ${full ? "disabled" : ""}>${label}</option>`;
+      })
+      .join("");
 
   const noAm = amCamps.length === 0;
   const noPm = pmCamps.length === 0;
@@ -401,14 +1209,20 @@ function buildPersonCard(person, week, loc) {
   return `
     <div class="person-card" id="card_${person.id}_${week.id}" style="--card-accent:${person.color}">
       <div class="person-header">
-        <div class="person-avatar" style="background:${person.color}1c; color:${person.color}; border:1px solid ${person.color}40">${person.name[0]}</div>
-        <h3>${person.name}</h3>
+        <div class="person-avatar" style="background:${person.color}1c; color:${person.color}; border:1px solid ${person.color}40">${canEdit() ? person.name[0] : "S" + getSenseiNumber(person, loc)}</div>
+        <h3>${displayName(person, loc)}</h3>
         <div class="person-header-actions">
+          ${
+            isAdmin()
+              ? `
           <select class="loc-select" title="Move to a different centre" data-person="${person.id}" onchange="onLocationChange(this)">
             <option value="rh" ${loc === "rh" ? "selected" : ""}>Richmond Hill</option>
             <option value="em" ${loc === "em" ? "selected" : ""}>Elgin Mills</option>
           </select>
           <button class="remove-sensei-btn" title="Remove ${person.name}" onclick="removeSensei('${person.id}')">✕</button>
+          `
+              : ""
+          }
         </div>
       </div>
       <div class="person-body">
@@ -417,37 +1231,57 @@ function buildPersonCard(person, week, loc) {
             <span class="tag am">// AM</span>
             <span class="tag time">9:00–12:00</span>
           </div>
-          ${noAm
-            ? `<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;padding:6px 0">No AM camps this week</div>`
-            : `<select class="camp-select" data-person="${person.id}" data-week="${week.id}" data-session="am" data-loc="${loc}">${amOptions}</select>`}
+          ${
+            noAm
+              ? `<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;padding:6px 0">No AM camps this week</div>`
+              : `<select class="camp-select" data-person="${person.id}" data-week="${week.id}" data-session="am" data-loc="${loc}" ${canEdit() ? "" : "disabled"}>${amOptions}</select>
+               ${buildRequestChangeBtn(week, "AM", loc, person.name)}`
+          }
         </div>
         <div class="session-block">
           <div class="session-label">
             <span class="tag pm">// PM</span>
             <span class="tag time">1:00–4:00</span>
           </div>
-          ${noPm
-            ? `<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;padding:6px 0">No PM camps this week</div>`
-            : `<select class="camp-select" data-person="${person.id}" data-week="${week.id}" data-session="pm" data-loc="${loc}">${pmOptions}</select>`}
+          ${
+            noPm
+              ? `<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;padding:6px 0">No PM camps this week</div>`
+              : `<select class="camp-select" data-person="${person.id}" data-week="${week.id}" data-session="pm" data-loc="${loc}" ${canEdit() ? "" : "disabled"}>${pmOptions}</select>
+               ${buildRequestChangeBtn(week, "PM", loc, person.name)}`
+          }
         </div>
+        ${!canEdit() ? `<div class="guest-note">Guest view — read only</div>` : ""}
       </div>
     </div>
   `;
 }
 
-function buildSummaryTable(week, people) {
-  const rows = people.map((p) => {
-    const amId = state.assignments[p.id]?.[week.id]?.am || "";
-    const pmId = state.assignments[p.id]?.[week.id]?.pm || "";
-    const amCamp = CAMPS.find((c) => c.id === amId);
-    const pmCamp = CAMPS.find((c) => c.id === pmId);
-    return `
+function buildRequestChangeBtn(week, session, loc, personName) {
+  if (!canEdit()) return "";
+  const camps = getCampsForWeekSession(week.id, session, loc);
+  const fullCamps = camps.filter(
+    (c) => getPickCount(week.id, session, c.id, loc) >= MAX_PER_CAMP,
+  );
+  if (fullCamps.length === 0) return "";
+  const safeName = personName.replace(/'/g, "\\'");
+  return `<button type="button" class="request-change-btn" onclick="promptChangeRequest('${week.id}','${session}','${loc}','${safeName}')">⚑ Request a full camp</button>`;
+}
+
+function buildSummaryTable(week, people, loc) {
+  const rows = people
+    .map((p) => {
+      const amId = state.assignments[p.id]?.[week.id]?.am || "";
+      const pmId = state.assignments[p.id]?.[week.id]?.pm || "";
+      const amCamp = CAMPS.find((c) => c.id === amId);
+      const pmCamp = CAMPS.find((c) => c.id === pmId);
+      return `
       <tr>
-        <td><strong style="color:${p.color}">${p.name}</strong></td>
+        <td><strong style="color:${p.color}">${displayName(p, loc)}</strong></td>
         <td>${amCamp ? `<span class="chip am">${amCamp.name}</span>` : `<span class="chip none">Not selected</span>`}</td>
         <td>${pmCamp ? `<span class="chip pm">${pmCamp.name}</span>` : `<span class="chip none">Not selected</span>`}</td>
       </tr>`;
-  }).join("");
+    })
+    .join("");
   return `
     <table class="summary-table">
       <thead><tr><th>Sensei</th><th>AM Camp</th><th>PM Camp</th></tr></thead>
@@ -461,13 +1295,16 @@ function buildCapGrid(week, loc) {
     const avail = schedule[c.id]?.[week.id] || [];
     return avail.length > 0;
   });
-  if (offered.length === 0) return `<div style="color:var(--text-muted);font-size:0.85rem;font-style:italic;padding:8px 0">No camps scheduled this week at this location.</div>`;
-  return offered.map((c) => {
-    const avail = schedule[c.id]?.[week.id] || [];
-    const items = avail.map((sess) => {
-      const cnt = getPickCount(week.id, sess, c.id, loc);
-      const cls = cnt === 0 ? "c0" : cnt === 1 ? "c1" : "c2";
-      return `
+  if (offered.length === 0)
+    return `<div style="color:var(--text-muted);font-size:0.85rem;font-style:italic;padding:8px 0">No camps scheduled this week at this location.</div>`;
+  return offered
+    .map((c) => {
+      const avail = schedule[c.id]?.[week.id] || [];
+      const items = avail
+        .map((sess) => {
+          const cnt = getPickCount(week.id, sess, c.id, loc);
+          const cls = cnt === 0 ? "c0" : cnt === 1 ? "c1" : "c2";
+          return `
         <div style="margin-bottom:5px">
           <div style="font-size:0.73rem;font-weight:700;color:var(--text-muted);margin-bottom:2px">${sess}</div>
           <div class="cap-bar-wrap">
@@ -475,13 +1312,15 @@ function buildCapGrid(week, loc) {
           </div>
           <div class="cap-label">${cnt} / ${MAX_PER_CAMP} senseis</div>
         </div>`;
-    }).join("");
-    return `
+        })
+        .join("");
+      return `
       <div class="cap-card">
         <div class="cc-name">${c.name} <span style="font-size:0.7rem;color:var(--text-muted);font-weight:600">(${c.age}yr)</span></div>
         ${items}
       </div>`;
-  }).join("");
+    })
+    .join("");
 }
 
 function updateAlerts(weekId) {
@@ -499,11 +1338,21 @@ function updateAlerts(weekId) {
       getCampsForWeekSession(weekId, sess, loc).forEach((c) => {
         const cnt = getPickCount(weekId, sess, c.id, loc);
         if (cnt > MAX_PER_CAMP) {
-          const who = people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
-          alerts.push(`<div class="alert error"><strong>[${locLabel}] ${c.name} (${sess})</strong> is over capacity — ${cnt}/${MAX_PER_CAMP} — ${who}</div>`);
+          const who = people
+            .filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id)
+            .map((p) => displayName(p, loc))
+            .join(", ");
+          alerts.push(
+            `<div class="alert error"><strong>[${locLabel}] ${c.name} (${sess})</strong> is over capacity — ${cnt}/${MAX_PER_CAMP} — ${who}</div>`,
+          );
         } else if (cnt === MAX_PER_CAMP) {
-          const who = people.filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id).map((p) => p.name).join(", ");
-          alerts.push(`<div class="alert warn"><strong>[${locLabel}] ${c.name} (${sess})</strong> is full (${cnt}/${MAX_PER_CAMP}) — ${who}</div>`);
+          const who = people
+            .filter((p) => state.assignments[p.id]?.[weekId]?.[key] === c.id)
+            .map((p) => displayName(p, loc))
+            .join(", ");
+          alerts.push(
+            `<div class="alert warn"><strong>[${locLabel}] ${c.name} (${sess})</strong> is full (${cnt}/${MAX_PER_CAMP}) — ${who}</div>`,
+          );
         }
       });
     });
@@ -513,9 +1362,16 @@ function updateAlerts(weekId) {
       const pmEmpty = !state.assignments[p.id]?.[weekId]?.pm;
       const amAvail = getCampsForWeekSession(weekId, "AM", loc).length > 0;
       const pmAvail = getCampsForWeekSession(weekId, "PM", loc).length > 0;
-      const missing = [amEmpty && amAvail ? "AM" : "", pmEmpty && pmAvail ? "PM" : ""].filter(Boolean).join(" & ");
+      const missing = [
+        amEmpty && amAvail ? "AM" : "",
+        pmEmpty && pmAvail ? "PM" : "",
+      ]
+        .filter(Boolean)
+        .join(" & ");
       if (missing) {
-        alerts.push(`<div class="alert info"><strong>${p.name}</strong> (${locLabel}) hasn't been assigned a ${missing} camp yet</div>`);
+        alerts.push(
+          `<div class="alert info"><strong>${displayName(p, loc)}</strong> (${locLabel}) hasn't been assigned a ${missing} camp yet</div>`,
+        );
       }
     });
   });
@@ -527,7 +1383,8 @@ function updateAlerts(weekId) {
 function onSelectChange(e) {
   const { person, week, session } = e.target.dataset;
   ensurePersonAssignments(person);
-  if (!state.assignments[person][week]) state.assignments[person][week] = { am: "", pm: "" };
+  if (!state.assignments[person][week])
+    state.assignments[person][week] = { am: "", pm: "" };
   state.assignments[person][week][session] = e.target.value;
   saveState();
   refreshWeek(week);
@@ -545,7 +1402,13 @@ function addSensei(name, loc) {
   const people = getAllPeople();
   const id = makeUniquePersonId(name, people);
   const palette = pickPaletteFor(people);
-  const newPerson = { id, name, color: palette.color, emoji: palette.emoji, location: loc };
+  const newPerson = {
+    id,
+    name,
+    color: palette.color,
+    emoji: palette.emoji,
+    location: loc,
+  };
   state.people.push(newPerson);
   state.assignments[id] = emptyWeekMap();
   saveState();
@@ -555,7 +1418,12 @@ function addSensei(name, loc) {
 function removeSensei(personId) {
   const person = getAllPeople().find((p) => p.id === personId);
   if (!person) return;
-  if (!confirm(`Remove ${person.name} from the roster? This will also clear all of their camp assignments.`)) return;
+  if (
+    !confirm(
+      `Remove ${person.name} from the roster? This will also clear all of their camp assignments.`,
+    )
+  )
+    return;
   state.people = state.people.filter((p) => p.id !== personId);
   delete state.assignments[personId];
   saveState();
@@ -569,7 +1437,7 @@ function onLocationChange(selectEl) {
   if (!person || person.location === newLoc) return;
   const newLocLabel = newLoc === "rh" ? "Richmond Hill" : "Elgin Mills";
   const ok = confirm(
-    `Move ${person.name} to ${newLocLabel}? Their existing camp picks will be cleared, since camp offerings differ by centre.`
+    `Move ${person.name} to ${newLocLabel}? Their existing camp picks will be cleared, since camp offerings differ by centre.`,
   );
   if (!ok) {
     selectEl.value = person.location; // revert
@@ -594,8 +1462,10 @@ function rerenderKeepingView() {
 
 function styleSelect(sel) {
   sel.classList.remove("selected-am", "selected-pm");
-  if (sel.value && sel.dataset.session === "am") sel.classList.add("selected-am");
-  if (sel.value && sel.dataset.session === "pm") sel.classList.add("selected-pm");
+  if (sel.value && sel.dataset.session === "am")
+    sel.classList.add("selected-am");
+  if (sel.value && sel.dataset.session === "pm")
+    sel.classList.add("selected-pm");
 }
 
 function refreshWeek(weekId) {
@@ -613,7 +1483,8 @@ function refreshWeek(weekId) {
 function resetWeek(weekId) {
   if (!confirm("Clear all picks for this week?")) return;
   getAllPeople().forEach((p) => {
-    if (state.assignments[p.id]) state.assignments[p.id][weekId] = { am: "", pm: "" };
+    if (state.assignments[p.id])
+      state.assignments[p.id][weekId] = { am: "", pm: "" };
   });
   saveState();
   refreshWeek(weekId);
@@ -635,4 +1506,4 @@ function renderEntireApp() {
   WEEKS.forEach((w) => updateAlerts(w.id));
 }
 
-initState();
+initAuth();

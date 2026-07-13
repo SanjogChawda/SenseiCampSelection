@@ -5,78 +5,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeNinjas — Sensei Camp Picker</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" type="image/x-icon" href="ninja.png">
+    <link rel="icon" type="image/x-icon" href="ninja.png" />
   </head>
   <body>
-    <header>
-      <div class="brand">
-        <div class="brand-mark">CN</div>
-        <div>
-          <h1>CodeNinjas</h1>
-          <p>// summer-camps-2026 · sensei-scheduler</p>
-        </div>
-      </div>
-      <div class="header-badges">
-        <span class="badge am">AM · 9:00–12:00</span>
-        <span class="badge pm">PM · 1:00–4:00</span>
-        <span class="badge">Max 3 per camp · per location</span>
-      </div>
-    </header>
-
-    <!-- Top nav -->
-    <nav class="top-nav">
-      <button class="nav-btn active" data-page="scheduler" onclick="switchPage('scheduler')">Scheduler</button>
-      <button class="nav-btn" data-page="schedule-rh" onclick="switchPage('schedule-rh')">Richmond Hill Schedule</button>
-      <button class="nav-btn" data-page="schedule-em" onclick="switchPage('schedule-em')">Elgin Mills Schedule</button>
-    </nav>
-
-    <!-- ── PAGE: Scheduler ── -->
-    <div class="page active" data-page="scheduler">
-      <div class="legend-bar">
-        <span><span class="dot am"></span> AM Session</span>
-        <span><span class="dot pm"></span> PM Session</span>
-        <span><span class="dot warn"></span> 1-2/3 spots taken</span>
-        <span><span class="dot full"></span> Camp full (3/2) — choose another</span>
-        <span class="loc-badge rh-badge">Richmond Hill</span>
-        <span class="loc-badge em-badge">Elgin Mills</span>
-      </div>
-
-      <div class="week-tabs-wrap">
-        <div class="week-tabs" id="weekTabs"></div>
-      </div>
-
-      <div class="main" id="mainContent"></div>
-    </div>
-
-    <!-- ── PAGE: Richmond Hill Schedule Image ── -->
-    <div class="page" data-page="schedule-rh">
-      <div class="schedule-image-page">
-        <div class="schedule-image-header">
-          <h2>Richmond Hill — Camp Schedule 2026</h2>
-          <p>Full overview of available camps by week for the Richmond Hill location.</p>
-        </div>
-        <div class="schedule-image-wrap">
-          <img src="richmond-hill-schedule.png" alt="Richmond Hill Summer Camp Schedule 2026" />
-        </div>
+    <!-- ── LOGIN SCREEN ── -->
+    <div class="auth-screen" id="loginScreen">
+      <div class="auth-card">
+        <div class="brand-mark" style="margin: 0 auto 14px">CN</div>
+        <h2>Sensei Camp Picker</h2>
+        <p class="auth-sub">Sign in to continue</p>
+        <form id="loginForm" class="auth-form">
+          <label
+            >Email
+            <input
+              type="email"
+              id="loginEmail"
+              required
+              autocomplete="username"
+            />
+          </label>
+          <label
+            >Password
+            <input
+              type="password"
+              id="loginPassword"
+              required
+              autocomplete="current-password"
+            />
+          </label>
+          <div class="auth-error" id="loginError"></div>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="loginSubmitBtn"
+            style="width: 100%; justify-content: center"
+          >
+            Sign In
+          </button>
+        </form>
+        <div class="auth-divider"><span>or</span></div>
+        <button
+          type="button"
+          class="btn btn-outline"
+          id="guestSignInBtn"
+          style="width: 100%; justify-content: center"
+          onclick="signInAsGuest()"
+        >
+          Sign in as guest
+        </button>
       </div>
     </div>
 
-    <!-- ── PAGE: Elgin Mills Schedule Image ── -->
-    <div class="page" data-page="schedule-em">
-      <div class="schedule-image-page">
-        <div class="schedule-image-header">
-          <h2>Elgin Mills — Camp Schedule 2026</h2>
-          <p>Full overview of available camps by week for the Elgin Mills location.</p>
+    <!-- ── APP ROOT (hidden until authenticated) ── -->
+    <div id="appRoot" style="display: none">
+      <header>
+        <div class="brand">
+          <div class="brand-mark">CN</div>
+          <div>
+            <h1>CodeNinjas</h1>
+            <p>// summer-camps-2026 · sensei-scheduler</p>
+          </div>
         </div>
-        <div class="schedule-image-wrap">
-          <img src="elgin-mills-schedule.png" alt="Elgin Mills Summer Camp Schedule 2026" />
+        <div class="header-badges">
+          <span class="badge am">AM · 9:00–12:00</span>
+          <span class="badge pm">PM · 1:00–4:00</span>
+          <span class="badge">Max 3 per camp · per location</span>
+          <span class="badge role-badge" id="roleBadge">—</span>
+          <div
+            class="notif-bell"
+            id="notifBell"
+            style="display: none"
+            onclick="toggleNotifPanel()"
+          >
+            🔔<span class="notif-count">0</span>
+            <div
+              class="notif-panel"
+              id="notifPanel"
+              onclick="event.stopPropagation()"
+            ></div>
+          </div>
+          <button class="badge logout-btn" id="logoutBtn" onclick="doLogout()">
+            Sign out
+          </button>
+        </div>
+      </header>
+
+      <!-- Top nav -->
+      <nav class="top-nav">
+        <button
+          class="nav-btn active"
+          data-page="scheduler"
+          onclick="switchPage('scheduler')"
+        >
+          Scheduler
+        </button>
+        <button
+          class="nav-btn"
+          data-page="schedule-rh"
+          onclick="switchPage('schedule-rh')"
+        >
+          Richmond Hill Schedule
+        </button>
+        <button
+          class="nav-btn"
+          data-page="schedule-em"
+          onclick="switchPage('schedule-em')"
+        >
+          Elgin Mills Schedule
+        </button>
+      </nav>
+
+      <!-- ── PAGE: Scheduler ── -->
+      <div class="page active" data-page="scheduler">
+        <div class="legend-bar">
+          <span><span class="dot am"></span> AM Session</span>
+          <span><span class="dot pm"></span> PM Session</span>
+          <span><span class="dot warn"></span> 1-2/3 spots taken</span>
+          <span
+            ><span class="dot full"></span> Camp full (3/2) — choose
+            another</span
+          >
+          <span class="loc-badge rh-badge">Richmond Hill</span>
+          <span class="loc-badge em-badge">Elgin Mills</span>
+        </div>
+
+        <div class="week-tabs-wrap">
+          <div class="week-tabs" id="weekTabs"></div>
+        </div>
+
+        <div class="main" id="mainContent"></div>
+      </div>
+
+      <!-- ── PAGE: Richmond Hill Schedule Image ── -->
+      <div class="page" data-page="schedule-rh">
+        <div class="schedule-image-page">
+          <div class="schedule-image-header">
+            <h2>Richmond Hill — Camp Schedule 2026</h2>
+            <p>
+              Full overview of available camps by week for the Richmond Hill
+              location.
+            </p>
+          </div>
+          <div class="schedule-image-wrap">
+            <img
+              src="richmond-hill-schedule.png"
+              alt="Richmond Hill Summer Camp Schedule 2026"
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    <footer>
-      CodeNinjas Richmond Hill &amp; Elgin Mills · Sensei Camp Coordinator
-    </footer>
+      <!-- ── PAGE: Elgin Mills Schedule Image ── -->
+      <div class="page" data-page="schedule-em">
+        <div class="schedule-image-page">
+          <div class="schedule-image-header">
+            <h2>Elgin Mills — Camp Schedule 2026</h2>
+            <p>
+              Full overview of available camps by week for the Elgin Mills
+              location.
+            </p>
+          </div>
+          <div class="schedule-image-wrap">
+            <img
+              src="elgin-mills-schedule.png"
+              alt="Elgin Mills Summer Camp Schedule 2026"
+            />
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        CodeNinjas Richmond Hill &amp; Elgin Mills · Sensei Camp Coordinator
+      </footer>
+    </div>
+    <!-- /#appRoot -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
