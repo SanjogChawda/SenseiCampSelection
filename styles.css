@@ -966,17 +966,18 @@ footer {
 }
 .notif-panel {
   display: none;
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
+  position: fixed;
+  top: 74px;
+  right: 32px;
   width: 320px;
+  max-width: calc(100vw - 40px);
   max-height: 420px;
   overflow-y: auto;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  z-index: 50;
+  z-index: 200;
   color: var(--text);
   text-align: left;
 }
